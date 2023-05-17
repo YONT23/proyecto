@@ -4,26 +4,16 @@ from apps.authenticacion.models import CustomUser
 
 CustomUser = get_user_model()
 
-
-class BaseModel(models.Model):
-    createdAt = models.DateField(auto_now_add=True,blank=True, null=True)
-    updateAt = models.DateField(auto_now=True, blank=True, null=True)
-    userCreate = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,null=True,related_name="+")
-    userUpdate = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,null=True,related_name="+")
-    
-    class Meta:
-        abstract = True
-
-class RolAutor(BaseModel):
+class RolAutor(models.Model):
     nombre = models.CharField(max_length=256)
 
-class Autor(BaseModel):
+class Autor(models.Model):
     usuario = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Autor'
         
-class Solicitud(BaseModel):
+class Solicitud(models.Model):
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
     orcid = models.CharField(max_length=256)
@@ -32,7 +22,7 @@ class Solicitud(BaseModel):
     class Meta:
         verbose_name = 'Solicitud'   
              
-class PasosSolicitud(BaseModel):
+class PasosSolicitud(models.Model):
     nombre = models.CharField(max_length=256)
     descripcion = models.CharField(max_length=256)
     responsable = models.CharField(max_length=256)
@@ -42,14 +32,14 @@ class PasosSolicitud(BaseModel):
     class Meta:
         verbose_name = 'PasosSolicitud'        
         
-class Seguimiento(BaseModel):
+class Seguimiento(models.Model):
     fecha = models.DateField()
     descripcion = models.CharField(max_length=256)
     estado = models.CharField(max_length=256)
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
     
-class Artículos(BaseModel):
+class Artículos(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
     año = models.CharField(max_length=256)
@@ -60,7 +50,7 @@ class Artículos(BaseModel):
     doi = models.CharField(max_length=256)
     url = models.CharField(max_length=256)
     
-class Libros(BaseModel):
+class Libros(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
     año = models.CharField(max_length=256)
@@ -69,7 +59,7 @@ class Libros(BaseModel):
     doi = models.CharField(max_length=256)
     url = models.CharField(max_length=256)
     
-class Capítuloslibros(BaseModel):
+class Capítuloslibros(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
     año_publicacion = models.CharField(max_length=256)
@@ -79,12 +69,12 @@ class Capítuloslibros(BaseModel):
     Título_libro = models.CharField(max_length=1000)
     Editorial = models.CharField(max_length=256)
     
-class Literatura(BaseModel):
+class Literatura(models.Model):
     articulo = models.ForeignKey(Artículos,on_delete=models.CASCADE)
     libros = models.ForeignKey(Libros,on_delete=models.CASCADE)
     capitulos = models.ForeignKey(Capítuloslibros,on_delete=models.CASCADE)
     
-class ContenidoSolicitud(BaseModel):
+class ContenidoSolicitud(models.Model):
     resumen = models.CharField(max_length=1500)
     palabras_claves = models.CharField(max_length=256)
     abstract = models.CharField(max_length=256)
@@ -95,18 +85,18 @@ class ContenidoSolicitud(BaseModel):
     agradecimientos = models.CharField(max_length=1500)
     literact_citada = models.ForeignKey(Literatura,on_delete=models.CASCADE)
     
-class Anexos(BaseModel):
+class Anexos(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
 
-class AutorXSolicitud(BaseModel):
+class AutorXSolicitud(models.Model):
     autor = models.ForeignKey(Autor,on_delete=models.CASCADE)
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     rol_autor = models.ForeignKey(RolAutor,on_delete=models.CASCADE)
     
-class NivelFormacion(BaseModel):
+class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     
-class AutorXFormacion(BaseModel):
+class AutorXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_grado = models.CharField(max_length=256)
     resol_conv = models.CharField(max_length=256)
