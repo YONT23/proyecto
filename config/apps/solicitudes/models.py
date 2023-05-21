@@ -7,8 +7,14 @@ CustomUser = get_user_model()
 class RolAutor(models.Model):
     nombre = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.nombre
+
 class Autor(models.Model):
     usuario = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.usuario
 
     class Meta:
         verbose_name = 'Autor'
@@ -19,6 +25,9 @@ class Solicitud(models.Model):
     orcid = models.CharField(max_length=256)
     afiliacion = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.afiliacion
+
     class Meta:
         verbose_name = 'Solicitud'   
              
@@ -28,7 +37,10 @@ class PasosSolicitud(models.Model):
     responsable = models.CharField(max_length=256)
     nivel = models.CharField(max_length=256)
     estado = models.CharField(max_length=256)
-
+   
+    def __str__(self):
+        return self.nombre
+    
     class Meta:
         verbose_name = 'PasosSolicitud'        
         
@@ -39,6 +51,9 @@ class Seguimiento(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.descripcion
+      
 class Artículos(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
@@ -50,6 +65,9 @@ class Artículos(models.Model):
     doi = models.CharField(max_length=256)
     url = models.CharField(max_length=256)
     
+    def __str__(self):
+        return self.titulo
+    
 class Libros(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
@@ -58,6 +76,9 @@ class Libros(models.Model):
     Editorial = models.CharField(max_length=256)
     doi = models.CharField(max_length=256)
     url = models.CharField(max_length=256)
+    
+    def __str__(self):
+        return self.titulo
     
 class Capítuloslibros(models.Model):
     apellidos_autor = models.CharField(max_length=256)
@@ -69,11 +90,17 @@ class Capítuloslibros(models.Model):
     Título_libro = models.CharField(max_length=1000)
     Editorial = models.CharField(max_length=256)
     
+    def __str__(self):
+        return self.titulo_capitulo
+    
 class Literatura(models.Model):
     articulo = models.ForeignKey(Artículos,on_delete=models.CASCADE)
     libros = models.ForeignKey(Libros,on_delete=models.CASCADE)
     capitulos = models.ForeignKey(Capítuloslibros,on_delete=models.CASCADE)
     
+    def __str__(self):
+        return f"{self.articulo.titulo} - {self.libros.titulo} - {self.capitulos.titulo_capitulo}"
+   
 class ContenidoSolicitud(models.Model):
     resumen = models.CharField(max_length=1500)
     palabras_claves = models.CharField(max_length=256)
@@ -85,17 +112,28 @@ class ContenidoSolicitud(models.Model):
     agradecimientos = models.CharField(max_length=1500)
     literact_citada = models.ForeignKey(Literatura,on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.resumen 
+       
 class Anexos(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
-
+    def __str__(self):
+        return self.solicitud
+    
 class AutorXSolicitud(models.Model):
     autor = models.ForeignKey(Autor,on_delete=models.CASCADE)
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     rol_autor = models.ForeignKey(RolAutor,on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.autor
+  
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)
-    
+   
+    def __str__(self):
+        return self.nombre 
+       
 class AutorXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_grado = models.CharField(max_length=256)
@@ -104,3 +142,6 @@ class AutorXFormacion(models.Model):
     cert_resol = models.CharField(max_length=256)
     nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
     autor = models.ForeignKey(Autor,on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.nombre
