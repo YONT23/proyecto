@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from apps.authenticacion.models import (Document_types, Genders, Persons, Resources, Roles, CustomUser, 
                        User_roles, Resources_roles, Resources_roles, Roles)
 
@@ -9,6 +10,11 @@ class UserSerializersSimple(ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'email')
+        
+class UserSerialSimple(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 #GENDER
 class GenderSerializers(ModelSerializer):
@@ -74,9 +80,11 @@ class ResourcesRolesSerializers(Serializer):
 
 #ROLES
 class RolesSerializers(ModelSerializer):
+    userId = UserSerialSimple(read_only=True)
+    
     class Meta:
         model = Roles
-        fields = ('id', 'name')
+        fields = '__all__'
               
 class RolesSimpleSerializers(ModelSerializer):
     resources = ResourcesSerializers(many=True)
@@ -85,21 +93,33 @@ class RolesSimpleSerializers(ModelSerializer):
         model = User_roles
         fields = '__all__'
 
-class RolesUserSerializers(ModelSerializer):
+class RolesUserSerializers(serializers.ModelSerializer):
+    userId = UserSerialSimple(read_only=True)
+    rolesId = RolesSerializers(read_only=True)
+
     class Meta:
         model = User_roles
-        exclude = ('rolesId',)
+        fields = ['id', 'status', 'userId', 'rolesId']
+        read_only_fields = ['userId', 'rolesId']
 
-    def create(self, validated_data):
-        user = validated_data['userId']
-        rolesForUser = [User_roles(
-            userId=user, rolesId=x) for x in validated_data['roles']]
+    #userId = UserSerializersSimple(read_only=True)
+    #rolesId = RolesSimpleSerializers(read_only=True)
+#
+    #class Meta:
+    #    model = User_roles
+    #    fields = '__all__'
+     
 
-        try:
-            response = User_roles.objects.bulk_create(rolesForUser)
-            return response[0]
-        except Exception as e:
-            response, code = create_response(
-                404, '', 'Duplicate Key User - Rol')
-            raise ValidationError(response, code=code)
+    #def create(self, validated_data):
+    #    user = validated_data['userId']
+    #    rolesForUser = [User_roles(
+    #        userId=user, rolesId=x) for x in validated_data['roles']]
+#
+    #    try:
+    #        response = User_roles.objects.bulk_create(rolesForUser)
+    #        return response[0]
+    #    except Exception as e:
+    #        response, code = create_response(
+    #            404, '', 'Duplicate Key User - Rol')
+    #        raise ValidationError(response, code=code)
   
