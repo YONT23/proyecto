@@ -116,7 +116,10 @@ class Resources(BaseModel):
     titulo = models.CharField(max_length=100)
     roles = models.ManyToManyField(
         Roles, through='Resources_roles', related_name='resources_roles')
-
+    
+    def __str__(self):
+        return f"{self.titulo} - {self.roles.name}"
+    
     class Meta:
         verbose_name = 'Resources'
         verbose_name_plural = 'Resources'
