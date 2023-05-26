@@ -11,10 +11,10 @@ class RolAutor(models.Model):
         return self.nombre
 
 class Autor(models.Model):
-    usuario = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
     def __str__(self):
-        return self.usuario
+        return str(self.usuario) 
 
     class Meta:
         verbose_name = 'Autor'

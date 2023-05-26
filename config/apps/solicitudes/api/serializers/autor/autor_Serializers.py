@@ -15,7 +15,7 @@ class AutorSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = CustomUser
+        model = Autor
         fields = '__all__'
  
 class NivelFormacionSerializer(serializers.ModelSerializer):
@@ -38,4 +38,15 @@ class AutorXFormacionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AutorXFormacion
+        fields = '__all__'
+
+class AutorSerial(serializers.ModelSerializer):
+    autorxformacion = AutorXFormacionSerializer(many=True) 
+    usuario = serializers.PrimaryKeyRelatedField(
+        queryset=get_user_model().objects.all(),
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = CustomUser
         fields = '__all__'

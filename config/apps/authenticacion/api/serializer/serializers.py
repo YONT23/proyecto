@@ -15,6 +15,7 @@ class UserSerialSimple(ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
+    
 
 #GENDER
 class GenderSerializers(ModelSerializer):
@@ -102,24 +103,26 @@ class RolesUserSerializers(serializers.ModelSerializer):
         fields = ['id', 'status', 'userId', 'rolesId']
         read_only_fields = ['userId', 'rolesId']
 
-    #userId = UserSerializersSimple(read_only=True)
-    #rolesId = RolesSimpleSerializers(read_only=True)
-#
-    #class Meta:
-    #    model = User_roles
-    #    fields = '__all__'
-     
+    def create(self, validated_data):
+        user = validated_data['userId']
+        rolesForUser = [User_roles(
+            userId=user, rolesId=x) for x in validated_data['roles']]
 
-    #def create(self, validated_data):
-    #    user = validated_data['userId']
-    #    rolesForUser = [User_roles(
-    #        userId=user, rolesId=x) for x in validated_data['roles']]
-#
-    #    try:
-    #        response = User_roles.objects.bulk_create(rolesForUser)
-    #        return response[0]
-    #    except Exception as e:
-    #        response, code = create_response(
-    #            404, '', 'Duplicate Key User - Rol')
-    #        raise ValidationError(response, code=code)
+        try:
+            response = User_roles.objects.bulk_create(rolesForUser)
+            return response[0]
+        except Exception as e:
+            response, code = create_response(
+                404, '', 'Duplicate Key User - Rol')
+            raise ValidationError(response, code=code)
   
+  
+class UserSerial(ModelSerializer):
+    rolesId = RolesSerializers(read_only=True, source='rolesId.roles')
+    
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+        
+    def __str__(self):
+        return self.rolesId.name

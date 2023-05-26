@@ -16,6 +16,8 @@ class CustomUser(AbstractUser):
 
     objects = UserManager()
 
+    def __str__(self):
+        return self.username
     #class Meta:
         #unique_together = (('username', 'email'))
     
@@ -65,7 +67,6 @@ class Roles(BaseModel):
         verbose_name = 'Roles'
         verbose_name_plural = 'Roles'
 
-
 class Persons(BaseModel):
     name = models.CharField(max_length=150,unique=True, blank=True, null=True)
     surname = models.CharField(max_length=150,unique=True, blank=True, null=True)
@@ -91,7 +92,6 @@ class Persons(BaseModel):
         verbose_name = 'Persons'
         verbose_name_plural = 'Persons'
 
-
 class User_roles(BaseModel):
     status = models.BooleanField(default=True)
     userId = models.ForeignKey(
@@ -99,8 +99,8 @@ class User_roles(BaseModel):
     rolesId = models.ForeignKey(
         Roles, on_delete=models.CASCADE, related_name='roles')
 
-    def __str__(self) -> str:
-        return self.userId.username + '-' + self.rolesId.name
+    def __str__(self):
+        return f"{self.userId.username} - {self.rolesId.name}"
 
     class Meta:
         unique_together = (('userId', 'rolesId'))
