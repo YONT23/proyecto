@@ -1,7 +1,7 @@
 from django.urls import path
-from .views_autorXF import AutorXFormacionList, AutorXFormacionDetail
+from .views_autorXF import UsuarioXFormacionList, UsuarioXFormacionDetail
 
 urlpatterns = [
-    path('autorxformacion/', AutorXFormacionList.as_view()),
-    path('autorxformacion/<int:pk>/', AutorXFormacionDetail.as_view()),
+    path('usuarioxformacion/', UsuarioXFormacionList.as_view()),
+    path('usuarioxformacion/<int:pk>/', UsuarioXFormacionDetail.as_view()),
 ]

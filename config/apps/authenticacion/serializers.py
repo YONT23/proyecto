@@ -10,6 +10,11 @@ from .api.serializer.serializers import RolesSerializers
 from .api.serializer.customValidators import UserValidatorBefore
 User = get_user_model()
 
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
 class UserChangePassword(ModelSerializer):
     password = CharField()
 

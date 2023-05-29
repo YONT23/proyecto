@@ -16,7 +16,6 @@ class UserSerialSimple(ModelSerializer):
         model = CustomUser
         fields = '__all__'
     
-
 #GENDER
 class GenderSerializers(ModelSerializer):
     name = CharField()

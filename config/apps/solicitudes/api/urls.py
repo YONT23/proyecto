@@ -1,10 +1,7 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('autor/', include('apps.solicitudes.api.views.autor.urls')),
-    path('autorrol/', include('apps.solicitudes.api.views.autor.urls_autorrol')),
-    path('autorxf/', include('apps.solicitudes.api.views.autor.urls_autorXF')),
-    path('autorxs/', include('apps.solicitudes.api.views.autor.urls_autorXS')),
+    path('usuarioxf/', include('apps.solicitudes.api.views.autor.urls_autorXF')),
     path('nivel/', include('apps.solicitudes.api.views.autor.urls_nivelF')),
     
     path('articulo/', include('apps.solicitudes.api.views.literatura.urls_articulo')),
@@ -14,6 +11,7 @@ urlpatterns = [
     path('literatura/', include('apps.solicitudes.api.views.literatura.urls_literatura')),
     
     path('seguimiento/', include('apps.solicitudes.api.views.seguimiento.urls_seguimiento')),
+    path('asignaciones/', include('apps.solicitudes.api.views.seguimiento.urls_asignaciones')),
     path('anexo/', include('apps.solicitudes.api.views.seguimiento.urls_anexo')),
     
     path('solicitud/', include('apps.solicitudes.api.views.solicitud.urls_solicitud')),

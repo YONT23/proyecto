@@ -4,56 +4,6 @@ from apps.authenticacion.models import CustomUser
 
 CustomUser = get_user_model()
 
-class RolAutor(models.Model):
-    nombre = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.nombre
-
-class Autor(models.Model):
-    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.usuario) 
-
-    class Meta:
-        verbose_name = 'Autor'
-        
-class Solicitud(models.Model):
-    fecha = models.DateField()
-    urls = models.CharField(max_length=256)
-    orcid = models.CharField(max_length=256)
-    afiliacion = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.afiliacion
-
-    class Meta:
-        verbose_name = 'Solicitud'   
-             
-class PasosSolicitud(models.Model):
-    nombre = models.CharField(max_length=256)
-    descripcion = models.CharField(max_length=256)
-    responsable = models.CharField(max_length=256)
-    nivel = models.CharField(max_length=256)
-    estado = models.CharField(max_length=256)
-   
-    def __str__(self):
-        return self.nombre
-    
-    class Meta:
-        verbose_name = 'PasosSolicitud'        
-        
-class Seguimiento(models.Model):
-    fecha = models.DateField()
-    descripcion = models.CharField(max_length=256)
-    estado = models.CharField(max_length=256)
-    solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
-    pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return self.descripcion
-      
 class Artículos(models.Model):
     apellidos_autor = models.CharField(max_length=256)
     inicial_nombre = models.CharField(max_length=256)
@@ -92,7 +42,7 @@ class Capítuloslibros(models.Model):
     
     def __str__(self):
         return self.titulo_capitulo
-    
+
 class Literatura(models.Model):
     articulo = models.ForeignKey(Artículos,on_delete=models.CASCADE)
     libros = models.ForeignKey(Libros,on_delete=models.CASCADE)
@@ -100,7 +50,7 @@ class Literatura(models.Model):
     
     def __str__(self):
         return f"{self.articulo.titulo} - {self.libros.titulo} - {self.capitulos.titulo_capitulo}"
-   
+
 class ContenidoSolicitud(models.Model):
     resumen = models.CharField(max_length=1500)
     palabras_claves = models.CharField(max_length=256)
@@ -115,33 +65,72 @@ class ContenidoSolicitud(models.Model):
     def __str__(self):
         return self.resumen 
        
+class Solicitud(models.Model):
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    contenidoSolicitud = models.ForeignKey(ContenidoSolicitud, on_delete=models.CASCADE)
+    fecha = models.DateField()
+    urls = models.CharField(max_length=256)
+    orcid = models.CharField(max_length=256)
+    afiliacion = models.CharField(max_length=256)
+    
+    def __str__(self):
+        return self.afiliacion
+
+    class Meta:
+        verbose_name = 'Solicitud'   
+             
+class PasosSolicitud(models.Model):
+    nombre = models.CharField(max_length=256)
+    descripcion = models.CharField(max_length=256)
+    responsable = models.CharField(max_length=256)
+    nivel = models.CharField(max_length=256)
+    estado = models.CharField(max_length=256)
+   
+    def __str__(self):
+        return self.nombre
+    
+    class Meta:
+        verbose_name = 'PasosSolicitud'        
+        
+class Seguimiento(models.Model):
+    fecha = models.DateField()
+    descripcion = models.CharField(max_length=256)
+    estado = models.CharField(max_length=256)
+    solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
+    pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.descripcion
+
 class Anexos(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     def __str__(self):
         return self.solicitud
-    
-class AutorXSolicitud(models.Model):
-    autor = models.ForeignKey(Autor,on_delete=models.CASCADE)
+        
+class Asignaciones(models.Model):
+    nombre = models.CharField(max_length=100)
+    fecha_asignacion = models.DateField() 
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
-    rol_autor = models.ForeignKey(RolAutor,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.autor
-  
+        return self.nombre
+    
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)
    
     def __str__(self):
         return self.nombre 
        
-class AutorXFormacion(models.Model):
+class UsuarioXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_grado = models.CharField(max_length=256)
     resol_conv = models.CharField(max_length=256)
     cert_grado = models.CharField(max_length=256)
+    nombre_institucion = models.CharField(max_length=256)
     cert_resol = models.CharField(max_length=256)
     nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
-    autor = models.ForeignKey(Autor,on_delete=models.CASCADE)
+    autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    
     
     def __str__(self):
         return self.nombre
