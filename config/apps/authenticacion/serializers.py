@@ -13,7 +13,7 @@ User = get_user_model()
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'avatar']
 
 class UserChangePassword(ModelSerializer):
     password = CharField()

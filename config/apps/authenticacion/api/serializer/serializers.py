@@ -115,6 +115,10 @@ class RolesUserSerializers(serializers.ModelSerializer):
                 404, '', 'Duplicate Key User - Rol')
             raise ValidationError(response, code=code)
   
+class UserRolesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_roles
+        fields = '__all__'
   
 class UserSerial(ModelSerializer):
     rolesId = RolesSerializers(read_only=True, source='rolesId.roles')

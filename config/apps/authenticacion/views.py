@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
 
-from .serializers import UserSerializer, CreateUserSerializers, UserChangePassword
+from .serializers import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer
 #from ...serializers.user.users_serializers import UserSerializers, CreateUserSerializers, UserChangePassword
 
 from .models import CustomUser
@@ -22,6 +22,12 @@ from helps.flatList import flatList
 
 from django.http import JsonResponse
 import bcrypt, logging
+
+class CustomUserListAPIView(APIView):
+    def get(self, request):
+        users = CustomUser.objects.all()
+        serializer = CustomUserSerializer(users, many=True)
+        return Response(serializer.data)
 
 class UsersViewPublic(RetrieveAPIView):
     queryset = CustomUser.objects.all()

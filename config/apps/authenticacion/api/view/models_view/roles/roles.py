@@ -1,6 +1,7 @@
 from apps.authenticacion.models import Roles, User_roles
 from rest_framework.views import APIView
-from ....serializer.serializers import RolesSerializers, RolesUserSerializers
+from rest_framework.generics import CreateAPIView
+from ....serializer.serializers import RolesSerializers, UserRolesSerializer, RolesUserSerializers
 from .....mudules import (CreateAPIView, ListAPIView, Response, UpdateAPIView,
                        create_response, status, DestroyAPIView, IsAdminRole)
 
@@ -96,13 +97,22 @@ class User_rolesView(APIView):
         user_roles = User_roles.objects.all()
         serializer = RolesUserSerializers(user_roles, many=True)
         return Response(serializer.data)
-
-    def post(self, request):
-        serializer = RolesUserSerializers(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserRolesCreateAPIView(CreateAPIView):
+    queryset = User_roles.objects.all()
+    serializer_class = UserRolesSerializer
+    
+    def post(self, request, *args, **kwargs):
+        userroles = UserRolesSerializer(data=request.data)
+        if userroles.is_valid():
+            userroles.save()
+            response, code = create_response(
+                status.HTTP_200_OK, 'Role', userroles.data)
+            return Response(response, status=code)
+        response, code = create_response(
+            status.HTTP_400_BAD_REQUEST, 'Error', userroles.errors)
+        return Response(response, status=code)
+    
 
 class User_rolesDetailView(APIView):
     def get_object(self, pk):
@@ -128,4 +138,5 @@ class User_rolesDetailView(APIView):
         user_roles = self.get_object(pk)
         user_roles.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
