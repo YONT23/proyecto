@@ -27,3 +27,25 @@ class AutorSerial(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
+
+#class RolAutorSerializer(serializers.Serializer):
+#    nombre = serializers.CharField(max_length=200)
+#
+#    def create(self, validated_data):
+#        return RolAutor.objects.create(**validated_data)
+
+class RolAutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RolAutor
+        fields = '__all__'
+        
+class AutorXSolicitudSerializer(serializers.ModelSerializer):
+    usuario = CustomUserSerializer()
+    rolautor = RolAutorSerializer()
+    solicitud = SolicitudSerializer()
+    
+    class Meta:
+        model = AutorXSolicitud
+        fields = ['id', 'usuario', 'rolautor', 'solicitud']
+        
+

@@ -66,7 +66,6 @@ class ContenidoSolicitud(models.Model):
         return self.resumen 
        
 class Solicitud(models.Model):
-    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     contenidoSolicitud = models.ForeignKey(ContenidoSolicitud, on_delete=models.CASCADE)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
@@ -74,7 +73,7 @@ class Solicitud(models.Model):
     afiliacion = models.CharField(max_length=256)
     
     def __str__(self):
-        return self.afiliacion
+        return self.urls
 
     class Meta:
         verbose_name = 'Solicitud'   
@@ -106,14 +105,28 @@ class Anexos(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     def __str__(self):
         return self.solicitud
-        
-class Asignaciones(models.Model):
-    nombre = models.CharField(max_length=100)
-    fecha_asignacion = models.DateField() 
-    solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
+    
+class RolAutor(models.Model):
+    nombre = models.CharField(max_length=200)
     
     def __str__(self):
-        return self.nombre
+        return str(self.nombre)
+    
+class AutorXSolicitud(models.Model):
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    rolautor = models.ForeignKey(RolAutor, on_delete=models.CASCADE)
+    solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.usuario.username} - {self.rolautor.nombre} - {self.solicitud.urls}"
+        
+#class Asignaciones(models.Model):
+#    nombre = models.CharField(max_length=100)
+#    fecha_asignacion = models.DateField() 
+#    solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
+#    
+#    def __str__(self):
+#        return self.nombre
     
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)

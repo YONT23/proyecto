@@ -3,10 +3,14 @@ from .models import *
 
 class PasosSolicitudAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion', 'responsable')
-
+    
+class RolAutorAdmin(admin.ModelAdmin):
+    list_display = ('nombre',)
 
 admin.site.register(UsuarioXFormacion)
-admin.site.register(Asignaciones)
+admin.site.register(RolAutor, RolAutorAdmin)
+admin.site.register(AutorXSolicitud)
+#admin.site.register(Asignaciones)
 admin.site.register(Solicitud)
 admin.site.register(Seguimiento)
 admin.site.register(Anexos)
