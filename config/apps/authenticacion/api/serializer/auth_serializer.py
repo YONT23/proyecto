@@ -7,29 +7,49 @@ from apps.authenticacion.models import CustomUser
 from .serializers import RolesSimpleSerializers, PersonsSimpleSerializers
 User = get_user_model()
 
-
-class RegisterSerializers(serializers.ModelSerializer):
-
+class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.SlugField(
         max_length=100,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
     )
     email = serializers.EmailField()
     password = serializers.CharField()
+    firstname = serializers.CharField(required=True)
+    lastname = serializers.CharField(required=True)
+    avatar = serializers.ImageField(required=False)
+    resetToken = serializers.CharField(max_length=256, required=False)
 
     class Meta:
         model = CustomUser
-        fields = '__all__'
-        validators = [UserValidatorBefore()]
-
-    person = PersonsSimpleSerializers(read_only=True)
-
+        fields = ['id', 'username', 'email', 'password', 'firstname', 'lastname', 'avatar', 'resetToken']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        #person = validated_data.pop('person')
-        user = CustomUser.objects.create(**validated_data)
-        #Persons.objects.create(**person, user=user)
+        password = validated_data.pop('password')
+        user = CustomUser(**validated_data)
+        user.set_password(password)
+        user.save()
         return user
+
+class RegisterSerializers(serializers.ModelSerializer):
+    username = serializers.SlugField(
+        max_length=100,
+        validators=[UniqueValidator(queryset=CustomUser.objects.all())]
+    )
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    firstname = serializers.CharField()
+    lastname = serializers.CharField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'password', 'firstname', 'lastname']
+        validators = [UserValidatorBefore()]
+
+    def create(self, validated_data):
+        user = CustomUser.objects.create(**validated_data)
+        return user
+
     
 class LoginSerializers(serializers.ModelSerializer):
     username = serializers.CharField(label='Email/username')

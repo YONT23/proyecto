@@ -10,14 +10,15 @@ class CustomUser(AbstractUser):
         ("email address"), blank=False, null=False, unique=True)
     password = models.CharField(max_length=100)
     resetToken = models.CharField(max_length=256, blank=True, null=True)
-    avatar = models.ImageField()
+    avatar = models.ImageField(blank=True)
     roles = models.ManyToManyField(
         'Roles', through='User_roles', related_name='user_roles')
-
+    
+    firstname = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=100)
+    
     objects = UserManager()
 
-    def __str__(self):
-        return self.username
     #class Meta:
         #unique_together = (('username', 'email'))
     
@@ -68,8 +69,6 @@ class Roles(BaseModel):
         verbose_name_plural = 'Roles'
 
 class Persons(BaseModel):
-    name = models.CharField(max_length=150,unique=True, blank=True, null=True)
-    surname = models.CharField(max_length=150,unique=True, blank=True, null=True)
     identification = models.CharField(
         max_length=255, unique=True, blank=True, null=True)
     address = models.CharField(max_length=50, blank=True, null=True)
@@ -85,10 +84,10 @@ class Persons(BaseModel):
                              on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.identification
 
     class Meta:
-        unique_together = (('name', 'identification'))
+        unique_together = (('phone', 'identification'))
         verbose_name = 'Persons'
         verbose_name_plural = 'Persons'
 

@@ -15,7 +15,7 @@ from .serializers import UserSerializer, CreateUserSerializers, UserChangePasswo
 from .models import CustomUser
 from .mudules import create_response
 
-from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers, RegisterSerializers
+from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers, RegisterSerializers, RegisterUserSerializer
 from apps.authenticacion.api.serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from helps.flatList import flatList
@@ -225,7 +225,7 @@ class AuthRegister(APIView):
     serializer_class = RegisterSerializers
 
     def post(self, request, *args, **kwargs):
-        registerUser = RegisterSerializers(data=request.data)
+        registerUser = RegisterUserSerializer(data=request.data)
         if registerUser.is_valid():
             password = make_password(
                 registerUser.validated_data['password'])
