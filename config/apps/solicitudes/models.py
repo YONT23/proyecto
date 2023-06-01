@@ -66,7 +66,9 @@ class ContenidoSolicitud(models.Model):
         return self.resumen 
        
 class Solicitud(models.Model):
-    contenidoSolicitud = models.ForeignKey(ContenidoSolicitud, on_delete=models.CASCADE)
+    nombre_completo = models.CharField(max_length=200) 
+    nombre_completo2 = models.CharField(max_length=200) 
+    contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
     orcid = models.CharField(max_length=256)
@@ -76,7 +78,7 @@ class Solicitud(models.Model):
         return self.urls
 
     class Meta:
-        verbose_name = 'Solicitud'   
+        verbose_name = 'Solicitud' 
              
 class PasosSolicitud(models.Model):
     nombre = models.CharField(max_length=256)
