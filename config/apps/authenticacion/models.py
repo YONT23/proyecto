@@ -10,15 +10,12 @@ class CustomUser(AbstractUser):
         ("email address"), blank=False, null=False, unique=True)
     password = models.CharField(max_length=100)
     resetToken = models.CharField(max_length=256, blank=True, null=True)
-    avatar = models.ImageField(blank=True)
+    avatar = models.ImageField()
     roles = models.ManyToManyField(
         'Roles', through='User_roles', related_name='user_roles')
-    
-    firstname = models.CharField(max_length=100)
-    lastname = models.CharField(max_length=100)
-    
-    objects = UserManager()
 
+    objects = UserManager()
+    
     #class Meta:
         #unique_together = (('username', 'email'))
     
@@ -40,7 +37,6 @@ class Document_types(BaseModel):
         verbose_name = 'Document_types'
         verbose_name_plural = "Document_types"
         
-
 class Genders(BaseModel):
     name = models.CharField(max_length=100)
     status = models.BooleanField(default=True)
@@ -50,8 +46,7 @@ class Genders(BaseModel):
 
     class Meta:
         verbose_name = 'Genders'
-        verbose_name_plural = 'Genders'
-        
+        verbose_name_plural = 'Genders'    
 
 class Roles(BaseModel):
     name = models.CharField(max_length=200, unique=True)
@@ -69,6 +64,8 @@ class Roles(BaseModel):
         verbose_name_plural = 'Roles'
 
 class Persons(BaseModel):
+    name = models.CharField(max_length=150,unique=True, blank=True, null=True)
+    surname = models.CharField(max_length=150,unique=True, blank=True, null=True)
     identification = models.CharField(
         max_length=255, unique=True, blank=True, null=True)
     address = models.CharField(max_length=50, blank=True, null=True)
@@ -84,10 +81,10 @@ class Persons(BaseModel):
                              on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self) -> str:
-        return self.identification
+        return self.name
 
     class Meta:
-        unique_together = (('phone', 'identification'))
+        unique_together = (('name', 'identification'))
         verbose_name = 'Persons'
         verbose_name_plural = 'Persons'
 

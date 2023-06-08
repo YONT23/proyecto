@@ -15,7 +15,7 @@ from .serializers import UserSerializer, CreateUserSerializers, UserChangePasswo
 from .models import CustomUser
 from .mudules import create_response
 
-from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers, RegisterSerializers, RegisterUserSerializer
+from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers,RegistroSerializzer, RegisterSerializers, RegisterUserSerializer
 from apps.authenticacion.api.serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from helps.flatList import flatList
@@ -221,8 +221,8 @@ class LogoutView(APIView):
                 status.HTTP_400_BAD_REQUEST, 'Error', e)
             return Response(e.args, code)
 
-class AuthRegister(APIView):
-    serializer_class = RegisterSerializers
+class AuthRegister1(APIView):
+    serializer_class = RegisterUserSerializer
 
     def post(self, request, *args, **kwargs):
         registerUser = RegisterUserSerializer(data=request.data)
@@ -245,6 +245,34 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         if self.request.user.is_authenticated:
             return self.request.user
 
+class RegistroView(APIView):
+    def post(self, request):
+        serializer = RegistroSerializzer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'message': 'Registro exitoso'}, status=201)
+        return Response(serializer.errors, status=400)
+
+class AuthRegister(APIView):
+    serializer_class = RegisterSerializers
+
+    def post(self, request, *args, **kwargs):
+        registerUser = RegisterSerializers(data=request.data)
+        if registerUser.is_valid():
+            password = make_password(
+                registerUser.validated_data['password'])
+            user = registerUser.create(registerUser.validated_data)  # Llamar al método create() personalizado
+            user.set_password(password)  # Establecer la contraseña en el usuario
+            user.save()  # Guardar el usuario en la base de datos
+            response, code = create_response(
+                status.HTTP_200_OK, 'User Register', 'Registro Exitosos')
+            return Response(response, status=code)
+        response, code = create_response(
+            status.HTTP_400_BAD_REQUEST, 'Error', registerUser.errors)
+        return Response(response, status=code)
+    
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
     print(f"\nRecupera la contraseña del correo '{reset_password_token.user.email}' usando el token '{reset_password_token.key}' desde la API http://localhost:8000/api/auth/reset/confirm/.")
+
+

@@ -1,12 +1,12 @@
 from django.urls import path, include
-from .views import (AuthLogin, LogoutView, AuthRegister, ProfileView, 
+from .views import (AuthLogin, LogoutView, AuthRegister, ProfileView, RegistroView,
                     UsersViewPublic, UserCreateView,  UserUpdateView, CustomUserListAPIView, UserChangePasswordView)
 urlpatterns = [
     # Auth views
     path('auth/login/', AuthLogin.as_view(), name='auth_login'),
     path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
     path('auth/register/', AuthRegister.as_view(), name='auth_signup'),
-    
+    path('registro/', RegistroView.as_view(), name='registro'),
     path('auth/reset/', include('django_rest_passwordreset.urls',
                  namespace='password_reset')),
     
