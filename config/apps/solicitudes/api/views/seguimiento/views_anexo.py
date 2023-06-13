@@ -11,7 +11,8 @@ class AnexosList(APIView):
     def get(self, request):
         anexos = Anexos.objects.all()
         serializer = AnexosSerializer(anexos, many=True)
-        return Response(serializer.data)
+        data = {'anexos': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = AnexosSerializer(data=request.data)
@@ -31,7 +32,8 @@ class AnexosDetail(APIView):
     def get(self, request, pk):
         anexos = self.get_object(pk)
         serializer = AnexosSerializer(anexos)
-        return Response(serializer.data)
+        data = {'anexo': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         anexos = self.get_object(pk)

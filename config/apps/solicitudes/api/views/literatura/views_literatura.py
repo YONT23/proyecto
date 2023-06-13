@@ -11,7 +11,8 @@ class LiteraturaList(APIView):
     def get(self, request):
         literaturas = Literatura.objects.all()
         serializer = LiteraturaSerializer(literaturas, many=True)
-        return Response(serializer.data)
+        data = {'literaturas': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = LiteraturaSerializer(data=request.data)
@@ -31,7 +32,8 @@ class LiteraturaDetail(APIView):
     def get(self, request, pk):
         literatura = self.get_object(pk)
         serializer = LiteraturaSerializer(literatura)
-        return Response(serializer.data)
+        data = {'literatura': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         literatura = self.get_object(pk)

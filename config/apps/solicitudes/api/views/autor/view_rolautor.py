@@ -8,7 +8,8 @@ class RolAutorListAPIView(APIView):
     def get(self, request):
         roles = RolAutor.objects.all()
         serializer = RolAutorSerializer(roles, many=True)
-        return Response(serializer.data)
+        data = {'roles': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = RolAutorSerializer(data=request.data)
@@ -30,7 +31,8 @@ class RolAutorDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = RolAutorSerializer(rol)
-        return Response(serializer.data)
+        data = {'rol': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         rol = self.get_object(pk)

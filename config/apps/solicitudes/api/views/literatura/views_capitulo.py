@@ -11,7 +11,8 @@ class CapítuloslibrosList(APIView):
     def get(self, request):
         capítuloslibros = Capítuloslibros.objects.all()
         serializer = CapítuloslibrosSerializer(capítuloslibros, many=True)
-        return Response(serializer.data)
+        data = {'capítuloslibros': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = CapítuloslibrosSerializer(data=request.data)
@@ -30,7 +31,8 @@ class CapítuloslibrosDetail(APIView):
     def get(self, request, pk):
         capítuloslibros = self.get_object(pk)
         serializer = CapítuloslibrosSerializer(capítuloslibros)
-        return Response(serializer.data)
+        data = {'capítuloslibro': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         capítuloslibros = self.get_object(pk)

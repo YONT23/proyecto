@@ -8,7 +8,8 @@ class AutorXSolicitudListAPIView(APIView):
     def get(self, request):
         autores = AutorXSolicitud.objects.all()
         serializer = AutorXSolicitudSerializer(autores, many=True)
-        return Response(serializer.data)
+        data = {'autores': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = AutorXSolicitudSerializer(data=request.data)
@@ -30,7 +31,8 @@ class AutorXSolicitudDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = AutorXSolicitudSerializer(autor)
-        return Response(serializer.data)
+        data = {'autor': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         autor = self.get_object(pk)
@@ -47,6 +49,5 @@ class AutorXSolicitudDetailAPIView(APIView):
         autor = self.get_object(pk)
         if not autor:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
         autor.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

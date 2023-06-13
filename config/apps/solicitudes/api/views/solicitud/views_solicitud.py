@@ -8,14 +8,14 @@ from ....models import Solicitud
 from ...serializers.solicitud.solicitud_serializers import SolicitudSerializer
 
 
+from rest_framework.response import Response
+
 class SolicitudList(APIView):
-    """
-    Lista todas las solicitudes o crea una nueva solicitud
-    """
     def get(self, request, format=None):
         solicitudes = Solicitud.objects.all()
         serializer = SolicitudSerializer(solicitudes, many=True)
-        return Response(serializer.data)
+        data = {'solicitudes': serializer.data}
+        return Response(data)
 
     def post(self, request, format=None):
         serializer = SolicitudSerializer(data=request.data)
@@ -26,9 +26,6 @@ class SolicitudList(APIView):
 
 
 class SolicitudDetail(APIView):
-    """
-    Lee, actualiza o elimina una solicitud.
-    """
     def get_object(self, pk):
         try:
             return Solicitud.objects.get(pk=pk)
@@ -38,7 +35,8 @@ class SolicitudDetail(APIView):
     def get(self, request, pk, format=None):
         solicitud = self.get_object(pk)
         serializer = SolicitudSerializer(solicitud)
-        return Response(serializer.data)
+        data = {'solicitud': serializer.data}
+        return Response(data)
 
     def put(self, request, pk, format=None):
         solicitud = self.get_object(pk)
@@ -52,3 +50,4 @@ class SolicitudDetail(APIView):
         solicitud = self.get_object(pk)
         solicitud.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+

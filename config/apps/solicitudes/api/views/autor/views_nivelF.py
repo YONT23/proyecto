@@ -11,7 +11,8 @@ class NivelFormacionList(APIView):
     def get(self, request):
         niveles_formacion = NivelFormacion.objects.all()
         serializer = NivelFormacionSerializer(niveles_formacion, many=True)
-        return Response(serializer.data)
+        data = {'niveles_formacion': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = NivelFormacionSerializer(data=request.data)
@@ -31,7 +32,8 @@ class NivelFormacionDetail(APIView):
     def get(self, request, pk):
         nivel_formacion = self.get_object(pk)
         serializer = NivelFormacionSerializer(nivel_formacion)
-        return Response(serializer.data)
+        data = {'nivel_formacion': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         nivel_formacion = self.get_object(pk)

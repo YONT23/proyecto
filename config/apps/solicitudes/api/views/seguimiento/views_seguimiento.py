@@ -12,7 +12,8 @@ class SeguimientoList(APIView):
     def get(self, request):
         seguimientos = Seguimiento.objects.all()
         serializer = SeguimientoSerializer(seguimientos, many=True)
-        return Response(serializer.data)
+        data = {'seguimientos': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = SeguimientoSerializer(data=request.data)
@@ -32,7 +33,8 @@ class SeguimientoDetail(APIView):
     def get(self, request, pk):
         seguimiento = self.get_object(pk)
         serializer = SeguimientoSerializer(seguimiento)
-        return Response(serializer.data)
+        data = {'seguimiento': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         seguimiento = self.get_object(pk)

@@ -11,7 +11,8 @@ class ContenidoSolicitudList(APIView):
     def get(self, request):
         contenidos = ContenidoSolicitud.objects.all()
         serializer = ContenidoSolicitudSerializer(contenidos, many=True)
-        return Response(serializer.data)
+        data = {'contenidos': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = ContenidoSolicitudSerializer(data=request.data)
@@ -30,7 +31,8 @@ class ContenidoSolicitudDetail(APIView):
     def get(self, request, pk):
         contenido = self.get_object(pk)
         serializer = ContenidoSolicitudSerializer(contenido)
-        return Response(serializer.data)
+        data = {'contenido': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         contenido = self.get_object(pk)

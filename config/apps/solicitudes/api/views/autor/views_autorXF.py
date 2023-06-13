@@ -11,7 +11,8 @@ class UsuarioXFormacionList(APIView):
     def get(self, request):
         usuarioxformacion = UsuarioXFormacion.objects.all()
         serializer = UsuarioXFormacionSerializer(usuarioxformacion, many=True)
-        return Response(serializer.data)
+        data = {'usuarioxformacion': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = UsuarioXFormacionSerializer(data=request.data)
@@ -30,7 +31,8 @@ class UsuarioXFormacionDetail(APIView):
     def get(self, request, pk):
         usuarioxformacion = self.get_object(pk)
         serializer = UsuarioXFormacionSerializer(usuarioxformacion)
-        return Response(serializer.data)
+        data = {'usuarioxformacion': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         usuarioxformacion = self.get_object(pk)

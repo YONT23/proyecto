@@ -11,7 +11,8 @@ class ArticulosList(APIView):
     def get(self, request):
         articulos = Artículos.objects.all()
         serializer = ArticuloSerializer(articulos, many=True)
-        return Response(serializer.data)
+        data = {'articulos': serializer.data}
+        return Response(data)
 
     def post(self, request):
         serializer = ArticuloSerializer(data=request.data)
@@ -31,7 +32,8 @@ class ArticulosDetail(APIView):
     def get(self, request, pk):
         articulo = self.get_object(pk)
         serializer = ArticuloSerializer(articulo)
-        return Response(serializer.data)
+        data = {'articulo': serializer.data}
+        return Response(data)
 
     def put(self, request, pk):
         articulo = self.get_object(pk)
