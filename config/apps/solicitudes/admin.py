@@ -17,10 +17,10 @@ admin.site.register(Anexos)
 admin.site.register(PasosSolicitud, PasosSolicitudAdmin)
 admin.site.register(NivelFormacion)
 admin.site.register(ContenidoSolicitud)
-admin.site.register(Literatura)
-admin.site.register(Artículos)
-admin.site.register(Libros)
-admin.site.register(Capítuloslibros)
+#admin.site.register(Literatura)
+#admin.site.register(Artículos)
+#admin.site.register(Libros)
+#admin.site.register(Capítuloslibros)
 
 
 

@@ -4,52 +4,52 @@ from apps.authenticacion.models import CustomUser
 
 CustomUser = get_user_model()
 
-class Artículos(models.Model):
-    apellidos_autor = models.CharField(max_length=256)
-    inicial_nombre = models.CharField(max_length=256)
-    año = models.CharField(max_length=256)
-    titulo = models.CharField(max_length=256)
-    revista = models.CharField(max_length=256)
-    volumen = models.CharField(max_length=256)
-    paginas = models.CharField(max_length=256)
-    doi = models.CharField(max_length=256)
-    url = models.CharField(max_length=256)
-    
-    def __str__(self):
-        return self.titulo
-    
-class Libros(models.Model):
-    apellidos_autor = models.CharField(max_length=256)
-    inicial_nombre = models.CharField(max_length=256)
-    año = models.CharField(max_length=256)
-    titulo = models.CharField(max_length=1000)
-    Editorial = models.CharField(max_length=256)
-    doi = models.CharField(max_length=256)
-    url = models.CharField(max_length=256)
-    
-    def __str__(self):
-        return self.titulo
-    
-class Capítuloslibros(models.Model):
-    apellidos_autor = models.CharField(max_length=256)
-    inicial_nombre = models.CharField(max_length=256)
-    año_publicacion = models.CharField(max_length=256)
-    titulo_capitulo = models.CharField(max_length=1000)
-    inicial_editorcompilador = models.CharField(max_length=256)
-    editorcompilador_libro = models.CharField(max_length=256)
-    Título_libro = models.CharField(max_length=1000)
-    Editorial = models.CharField(max_length=256)
-    
-    def __str__(self):
-        return self.titulo_capitulo
-
-class Literatura(models.Model):
-    articulo = models.ForeignKey(Artículos,on_delete=models.CASCADE)
-    libros = models.ForeignKey(Libros,on_delete=models.CASCADE)
-    capitulos = models.ForeignKey(Capítuloslibros,on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return f"{self.articulo.titulo} - {self.libros.titulo} - {self.capitulos.titulo_capitulo}"
+#class Artículos(models.Model):
+#    apellidos_autor = models.CharField(max_length=256)
+#    inicial_nombre = models.CharField(max_length=256)
+#    año = models.CharField(max_length=256)
+#    titulo = models.CharField(max_length=256)
+#    revista = models.CharField(max_length=256)
+#    volumen = models.CharField(max_length=256)
+#    paginas = models.CharField(max_length=256)
+#    doi = models.CharField(max_length=256)
+#    url = models.CharField(max_length=256)
+#    
+#    def __str__(self):
+#        return self.titulo
+#    
+#class Libros(models.Model):
+#    apellidos_autor = models.CharField(max_length=256)
+#    inicial_nombre = models.CharField(max_length=256)
+#    año = models.CharField(max_length=256)
+#    titulo = models.CharField(max_length=1000)
+#    Editorial = models.CharField(max_length=256)
+#    doi = models.CharField(max_length=256)
+#    url = models.CharField(max_length=256)
+#    
+#    def __str__(self):
+#        return self.titulo
+#    
+#class Capítuloslibros(models.Model):
+#    apellidos_autor = models.CharField(max_length=256)
+#    inicial_nombre = models.CharField(max_length=256)
+#    año_publicacion = models.CharField(max_length=256)
+#    titulo_capitulo = models.CharField(max_length=1000)
+#    inicial_editorcompilador = models.CharField(max_length=256)
+#    editorcompilador_libro = models.CharField(max_length=256)
+#    Título_libro = models.CharField(max_length=1000)
+#    Editorial = models.CharField(max_length=256)
+#    
+#    def __str__(self):
+#        return self.titulo_capitulo
+#
+#class Literatura(models.Model):
+#    articulo = models.ForeignKey(Artículos,on_delete=models.CASCADE)
+#    libros = models.ForeignKey(Libros,on_delete=models.CASCADE)
+#    capitulos = models.ForeignKey(Capítuloslibros,on_delete=models.CASCADE)
+#    
+#    def __str__(self):
+#        return f"{self.articulo.titulo} - {self.libros.titulo} - {self.capitulos.titulo_capitulo}"
 
 class ContenidoSolicitud(models.Model):
     resumen = models.CharField(max_length=1500)
@@ -60,12 +60,14 @@ class ContenidoSolicitud(models.Model):
     materi_metodos = models.CharField(max_length=2000)
     result_discu = models.CharField(max_length=2000)
     agradecimientos = models.CharField(max_length=1500)
-    literact_citada = models.ForeignKey(Literatura,on_delete=models.CASCADE)
+    literact_citada = models.CharField(max_length=2000)
+    #models.ForeignKey(Literatura,on_delete=models.CASCADE)
     
     def __str__(self):
         return self.resumen 
        
 class Solicitud(models.Model):
+    titulo_articulo = models.CharField(max_length=200) 
     nombre_completo = models.CharField(max_length=200) 
     nombre_completo2 = models.CharField(max_length=200) 
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)

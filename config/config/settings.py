@@ -62,15 +62,17 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    #'configs.middlewares.roles_middleware.RoleMiddleware',
+    
     'corsheaders.middleware.CorsMiddleware',
-    
+
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -79,7 +81,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 
 # Custom user model
-AUTH_USER_MODEL = "authenticacion.CustomUser"
+#AUTH_USER_MODEL = "authenticacion.CustomUser"
+AUTH_USER_MODEL = 'authenticacion.CustomUser'
+
 AUTHENTICATION_BACKENDS = ['configs.backends.EmailBackend.EmailBackend']
 ACCOUNT_SESSION_REMEMBER = True
 
@@ -161,11 +165,23 @@ REST_FRAMEWORK = {
 ###   SIMPLE JWT
 
 SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+       
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=5),
+
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    
     'ROTATE_REFRESH_TOKENS' : True,
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=12),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
+    
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
     
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
@@ -177,19 +193,9 @@ SIMPLE_JWT = {
     
     'JTI_CLAIM': 'jti',
     
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-    
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-    
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(hours=10),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 ### CACHES
@@ -200,8 +206,6 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
