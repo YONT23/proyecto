@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django_rest_passwordreset.signals import reset_password_token_created
 
+from rest_framework.permissions import AllowAny
+
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -24,6 +26,8 @@ from django.http import JsonResponse
 import bcrypt, logging
 
 class CustomUserListAPIView(APIView):
+    permission_classes = (AllowAny,)
+
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
@@ -159,6 +163,8 @@ class UserChangePasswordView(UpdateAPIView):
 
 class AuthLogin(APIView):
 
+    permission_classes = (AllowAny,)
+    
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
         return {
@@ -196,30 +202,7 @@ class AuthLogin(APIView):
                                                   'menu': menu.data})
         return Response(response, status=code)
 
-class LogoutView(APIView):
-    def get(self, request, *args, **kwargs):
-        try:
-            jwt_token = request.session.get('refresh-token', None)
-            resp = HttpResponse('content')
-            resp.cookies.clear()
-            resp.flush()
-            token = RefreshToken(jwt_token)
-            token.blacklist()
-            logout(request)
-            request.session.clear()
-            resp.flush()
-            request.session.flush()
-            response, code = create_response(
-                status.HTTP_200_OK, 'Logout Success', 'Ok')
-            return Response(response, code)
-        except TokenError as TkError:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', f'{TkError}')
-            return Response(response, code)
-        except Exception as e:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', e)
-            return Response(e.args, code)
+
 
 class AuthRegister1(APIView):
     serializer_class = RegisterUserSerializer
@@ -271,6 +254,32 @@ class AuthRegister(APIView):
             status.HTTP_400_BAD_REQUEST, 'Error', registerUser.errors)
         return Response(response, status=code)
     
+    
+class LogoutView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            jwt_token = request.session.get('refresh-token', None)
+            resp = HttpResponse('content')
+            resp.cookies.clear()
+            resp.flush()
+            token = RefreshToken(jwt_token)
+            token.blacklist()
+            logout(request)
+            request.session.clear()
+            resp.flush()
+            request.session.flush()
+            response, code = create_response(
+                status.HTTP_200_OK, 'Logout Success', 'Ok')
+            return Response(response, code)
+        except TokenError as TkError:
+            response, code = create_response(
+                status.HTTP_400_BAD_REQUEST, 'Error', f'{TkError}')
+            return Response(response, code)
+        except Exception as e:
+            response, code = create_response(
+                status.HTTP_400_BAD_REQUEST, 'Error', e)
+            return Response(e.args, code)
+
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
     print(f"\nRecupera la contraseña del correo '{reset_password_token.user.email}' usando el token '{reset_password_token.key}' desde la API http://localhost:8000/api/auth/reset/confirm/.")

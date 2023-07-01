@@ -14,7 +14,6 @@ from rest_framework.response import Response
 #from configs.middlewares.roles_middleware import RoleMiddleware
 
 
-
 #def is_author(user):
 #    return user.role == 'Autor'
 #

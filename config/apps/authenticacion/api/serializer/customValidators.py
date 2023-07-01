@@ -6,7 +6,6 @@ from rest_framework.utils.representation import smart_repr
 from ...mudules import create_response 
 User = get_user_model()
 
-
 class UserValidatorBefore:
 
     def __init__(self, username='username', email='email', password='password'):

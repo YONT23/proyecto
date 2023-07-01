@@ -74,7 +74,7 @@ def validate_password(self, value):
     return make_password(value)
 
 def validate_username(self, value):
-    value = value.replace(" ", "")  # Ya que estamos borramos los espacios
+    value = value.replace(" ", "") 
     try:
         user = get_user_model().objects.get(username=value)
         # Si es el mismo usuario mandando su mismo username le dejamos

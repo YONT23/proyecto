@@ -27,7 +27,6 @@
 #        else:
 #            # Redirige a la página de inicio de sesión
 #            return redirect('login')  # Reemplaza 'login' por la URL de tu página de inicio de sesión
-
 #from django.contrib.auth import get_user
 #
 #class RoleMiddleware:

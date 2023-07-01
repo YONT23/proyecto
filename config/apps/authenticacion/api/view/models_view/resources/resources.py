@@ -1,7 +1,7 @@
 from .....mudules import ListAPIView, Response, UpdateAPIView, status, create_response, DestroyAPIView, IsAdminRole
 from apps.authenticacion.models import Resources
 from ....serializer.serializers import ResourcesSerializers
-
+from rest_framework.permissions import AllowAny
 
 class ResourcesListView(ListAPIView):
     queryset = Resources.objects.all()
@@ -47,7 +47,7 @@ class ResourcesUpdateView(UpdateAPIView):
 class ResourcesDestroyView(DestroyAPIView):
     queryset = Resources.objects.all()
     serializer_class = ResourcesSerializers
-    permission_classes = [IsAdminRole]
+    permission_classes = (AllowAny,)
 
     def get_object(self):
         try:

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'apps.publication.apps.PublicationConfig',
     'apps.pqrs.apps.PqrsConfig',
     'apps.solicitudes.apps.SolicitudesConfig',
+    
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,9 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    
+    'apps.middlewares.middleware.ServiceMiddleware',
+    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
