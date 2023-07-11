@@ -2,3 +2,12 @@
   "username": "elsa",
   "password": "123456789"
 }
+
+
+{
+  "solicitud": 1,
+  "pasos_solicitud": 1,
+  "fecha": "2023-07-10",
+  "descripcion": "Muy pero muy bonita",
+  "estado": "2"
+}
