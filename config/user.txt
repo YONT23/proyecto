@@ -11,3 +11,14 @@
   "descripcion": "Muy pero muy bonita",
   "estado": "2"
 }
+
+
+{
+  "username": "ejemplo3",
+  "password": "123456789",
+    "email": "ejemplo3@gmail.com",
+    "first_name": "ejemplo3",
+    "last_name": "ejem"
+}
+
+

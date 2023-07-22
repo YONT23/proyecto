@@ -8,11 +8,13 @@ class ServiceMiddleware:
     def __call__(self, request):
         url = request.path_info
         if request.user and not request.user.is_anonymous:
-            iduser = CustomUser.objects.filter(username=request.user).values("id") 
-            if iduser:
-                rolUser = User_roles.objects.filter(userId=iduser[0]['id']).values('rolesId')
-                print(rolUser)
-            
+            idUsuario = CustomUser.objects.get(username = request.user)
+            print(idUsuario.id)
+            rolUsuario = User_roles.objects.filter(userId = idUsuario.id).values('rolesId')
+            print(rolUsuario)
+            for item in rolUsuario:
+                print(f"{item['rolesId']}")            
+  
         print(url)
         response = self.get_response(request)
         return response
@@ -22,9 +24,8 @@ class ServiceMiddleware:
             '/ruta1/': ['Administrador'],
             '/ruta2/': ['Administrador', 'Jefe Editor'],
             '/ruta3/': ['Administrador', 'Editor'],
-            '/ruta4/': ['Administrador', 'Evaluador'],
-            '/ruta5/': ['Administrador', 'Autor'],
-            '/ruta6/': ['Administrador', 'Editor invitado'],
-            '/ruta7/': ['Administrador', 'Asistente editorial'],
         }
         return required_roles.get(request.path_info, [])
+
+
+

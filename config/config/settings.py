@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from datetime import timedelta
 import environ
@@ -73,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
+    #Middleware agregado
     'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',

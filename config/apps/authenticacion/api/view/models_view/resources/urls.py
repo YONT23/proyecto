@@ -1,8 +1,7 @@
-from .....mudules import path
-from .resources import  ResourcesListView, ResourcesUpdateView,ResourcesDestroyView
+from django.urls import path
+from .resources import ResourcesListCreateView, ResourcesUpdateDeleteView
 
 urlpatterns = [
-    path('roles/', ResourcesListView.as_view()),
-    path('update/<int:pk>', ResourcesUpdateView.as_view()),
-    path('delete/<int:pk>', ResourcesDestroyView.as_view()),
+    path('resources/', ResourcesListCreateView.as_view(), name='resources-list-create'),
+    path('resources/<int:pk>/', ResourcesUpdateDeleteView.as_view(), name='resources-update-delete'),
 ]
