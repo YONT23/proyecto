@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -163,7 +164,7 @@ class UserChangePasswordView(UpdateAPIView):
 
 class AuthLogin(APIView):
 
-    permission_classes = (AllowAny,)
+    #permission_classes = (IsAuthenticated,)
     
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)

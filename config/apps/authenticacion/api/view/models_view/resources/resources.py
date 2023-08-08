@@ -7,16 +7,17 @@ from apps.authenticacion.models import Resources, Roles
 from ....serializer.serializers import ResourcesSerializers
 
 class ResourcesListCreateView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # Obtener el ID del rol desde los parámetros de la solicitud
-        role_id = request.GET.get('role_id')
+        #role_id = request.GET.get('rolesId')
         # Obtener el rol o devolver un error 404 si no existe
-        role = get_object_or_404(Roles, id=role_id)
-        queryset = Resources.objects.filter(roles=role)
+        #role = get_object_or_404(Roles, id=role_id)
+        #queryset = Resources.objects.filter(roles=role)
+        queryset = Resources.objects.all()
         serializer = ResourcesSerializers(queryset, many=True)
-        return Response(serializer.data[0] if serializer.data else None)
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = ResourcesSerializers(data=request.data)

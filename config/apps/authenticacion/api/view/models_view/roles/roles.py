@@ -67,7 +67,7 @@ class RoleUpdateView(UpdateAPIView):
 class RolesDestroyView(DestroyAPIView):
     queryset = Roles.objects.all()
     serializer_class = RolesSerializers
-    permission_classes = [IsAdminRole]
+    #permission_classes = [IsAdminRole]
 
     def get_object(self):
         try:
