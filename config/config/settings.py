@@ -62,8 +62,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    #'configs.middlewares.roles_middleware.RoleMiddleware',
-    
     'corsheaders.middleware.CorsMiddleware',
 
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -73,7 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
     #Middleware agregado
-    'apps.middlewares.middleware.ServiceMiddleware',
+    #'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

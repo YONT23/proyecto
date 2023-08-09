@@ -40,12 +40,11 @@ class RolAutorSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class AutorXSolicitudSerializer(serializers.ModelSerializer):
-    usuario = CustomUserSerializer()
-    rolautor = RolAutorSerializer()
-    solicitud = SolicitudSerializer()
+    #usuario = CustomUserSerializer()
+    #rolautor = RolAutorSerializer()
+    #solicitud = SolicitudSerializer()
     
     class Meta:
         model = AutorXSolicitud
-        fields = ['id', 'usuario', 'rolautor', 'solicitud']
-        
+        fields = ['id', 'usuario', 'rolautor', 'solicitud']      
 

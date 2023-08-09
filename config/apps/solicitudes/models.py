@@ -100,6 +100,7 @@ class Seguimiento(models.Model):
     descripcion = models.CharField(max_length=256)
     estado = models.CharField(max_length=256)
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
+    responsable = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
     
     def __str__(self):

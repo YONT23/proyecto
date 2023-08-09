@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 class SolicitudList(APIView):
-    permission_classes = (IsAuthenticated,)
+    #permission_classes = (IsAuthenticated,)
     
     def get(self, request, format=None):
         solicitudes = Solicitud.objects.all()

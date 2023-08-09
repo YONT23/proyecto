@@ -22,3 +22,9 @@
 }
 
 
+
+################ PENDIENTE ######################################
+que solo admita seguimientos con solicitudes diferentes a las que existen 
+si hay un sgm que ya tenga la solicitud seleci deb mandar err 
+
+################## Dejar login register como predeterminada
