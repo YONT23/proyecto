@@ -13,15 +13,21 @@ class ServiceMiddleware:
             rolUsuario = User_roles.objects.filter(userId = idUsuario.id).values('rolesId')
             print(rolUsuario)
             
-            user_roles = [item['rolesId'] for item in rolUsuario]
-                
-            user_resources = self.get_user_resources(user_roles)
-            print(f"Recursos asociados a los roles del usuario: {user_resources}")
+            role_recursos = Resources.objects.all().prefetch_related('roles').values('path','titulo','roles').filter(roles__in= (rolUsuario))
             
-            #VA HACER UN RECORRIDO AL VECTOR A PATH CON LOS user RECURSOS
+            for rolerec in role_recursos:
+                print(rolerec)
+            #    if(url in rolerec.path):
+            #        sw = 1
+            #if(sw == 0):
+            #    return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")                    
+            
+            #user_roles = [item['rolesId'] for item in rolUsuario]  
+            #user_resources = self.get_user_resources(user_roles)
+            #print(f"Recursos asociados a los roles del usuario: {user_resources}")
 
-            if url not in user_resources:
-                return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")          
+            #if url not in user_resources:
+            #    return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")          
   
         print(url)
         response = self.get_response(request)
@@ -30,7 +36,7 @@ class ServiceMiddleware:
     def get_user_resources(self, user_roles):
         user_resources = []
         for role in user_roles:
-            resources = Resources.objects.filter(roles__pk=role).values_list('link', flat=True)
+            resources = Resources.objects.filter(roles__pk=role).values_list('path', flat=True)
             user_resources.extend(resources)
         return user_resources
 

@@ -61,6 +61,7 @@ class ContenidoSolicitud(models.Model):
     result_discu = models.CharField(max_length=2000)
     agradecimientos = models.CharField(max_length=1500)
     literact_citada = models.CharField(max_length=2000)
+    status = models.BooleanField(default=True)
     #models.ForeignKey(Literatura,on_delete=models.CASCADE)
     
     def __str__(self):
@@ -68,13 +69,14 @@ class ContenidoSolicitud(models.Model):
        
 class Solicitud(models.Model):
     titulo_articulo = models.CharField(max_length=200) 
-    nombre_completo = models.CharField(max_length=200) 
-    nombre_completo2 = models.CharField(max_length=200) 
+    autores = models.CharField(max_length=500) 
+    #nombre_completo2 = models.CharField(max_length=200) 
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
     orcid = models.CharField(max_length=256)
     afiliacion = models.CharField(max_length=256)
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return self.urls
@@ -88,6 +90,7 @@ class PasosSolicitud(models.Model):
     responsable = models.CharField(max_length=256)
     nivel = models.CharField(max_length=256)
     estado = models.CharField(max_length=256)
+    status = models.BooleanField(default=True)
    
     def __str__(self):
         return self.nombre
@@ -102,17 +105,21 @@ class Seguimiento(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
     responsable = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return self.descripcion
 
 class Anexos(models.Model):
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    
     def __str__(self):
         return self.solicitud
     
 class RolAutor(models.Model):
     nombre = models.CharField(max_length=200)
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return str(self.nombre)
@@ -121,6 +128,7 @@ class AutorXSolicitud(models.Model):
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     rolautor = models.ForeignKey(RolAutor, on_delete=models.CASCADE)
     solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.usuario.username} - {self.rolautor.nombre} - {self.solicitud.urls}"
@@ -135,6 +143,7 @@ class AutorXSolicitud(models.Model):
     
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)
+    status = models.BooleanField(default=True)
    
     def __str__(self):
         return self.nombre 
@@ -148,7 +157,7 @@ class UsuarioXFormacion(models.Model):
     cert_resol = models.CharField(max_length=256)
     nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
     autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return self.nombre

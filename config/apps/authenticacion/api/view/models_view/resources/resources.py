@@ -61,42 +61,40 @@ class ResourcesUpdateDeleteView(APIView):
 
 ########### RECURSOS ROLES ############
 
-class ResourcesRolesList(APIView):
+class ResourcesRolesListView(APIView):
     def get(self, request):
-        resource_roles = Resources_roles.objects.all()
-        serializer = ResourcesRolesSerializers(resource_roles, many=True)
+        resources_roles = Resources_roles.objects.all()
+        serializer = ResourcesRolesSerializers(resources_roles, many=True)
         return Response(serializer.data)
 
     def post(self, request):
         serializer = ResourcesRolesSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {"message": "Resource role created successfully."},
-                status=status.HTTP_201_CREATED
-            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ResourcesRolesDetail(APIView):
-    def get(self, request, pk):
-        resource_role = get_object_or_404(Resources_roles, pk=pk)
-        serializer = ResourcesRolesSerializers(resource_role)
-        return Response(serializer.data)
+class ResourcesRolesDetailView(APIView):
+    def get_object(self, pk):
+        try:
+            return Resources_roles.objects.get(pk=pk)
+        except Resources_roles.DoesNotExist:
+            return None
 
     def put(self, request, pk):
-        resource_role = get_object_or_404(Resources_roles, pk=pk)
-        serializer = ResourcesRolesSerializers(
-            resource_role, data=request.data, partial=True)
+        resources_roles = self.get_object(pk)
+        if resources_roles is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ResourcesRolesSerializers(resources_roles, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {"message": "Resource role updated successfully."},
-                status=status.HTTP_200_OK
-            )
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        resource_role = get_object_or_404(Resources_roles, pk=pk)
-        resource_role.status = False
-        resource_role.save()
+        resources_roles = self.get_object(pk)
+        if resources_roles is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        resources_roles.delete()  
         return Response(status=status.HTTP_204_NO_CONTENT)

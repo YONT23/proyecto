@@ -52,8 +52,17 @@ class ResourcesSerializers(ModelSerializer):
     class Meta:
         model = Resources
         exclude = ('roles',)     
+        
+class ResourcesRolesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Resources_roles
+        fields = '__all__'     
 
-class ResourcesRolesSerializers(Serializer):
+class Resources_RolesSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Resources_roles
+        fields = '__all__'
+        
     rolesId = IntegerField()
     resources = ResourcesSerializers(many=True)
 
