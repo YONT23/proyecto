@@ -68,7 +68,7 @@ class DocumentUpdateView(UpdateAPIView):
 class DocumentDestroyView(DestroyAPIView):
     queryset = Document_types.objects.all()
     serializer_class = DocumentSerializers
-    permission_classes = [IsAdminRole]
+    #permission_classes = [IsAdminRole]
 
     def get_object(self):
         try:

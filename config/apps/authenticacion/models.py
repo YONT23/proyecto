@@ -112,6 +112,7 @@ class Resources(BaseModel):
     titulo = models.CharField(max_length=100)
     roles = models.ManyToManyField(
         Roles, through='Resources_roles', related_name='resources_roles')
+    status = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.titulo} - {self.roles.name}"
@@ -125,6 +126,7 @@ class Resources_roles(BaseModel):
         Resources, on_delete=models.CASCADE, related_name='resources')
     rolesId = models.ForeignKey(
         Roles, on_delete=models.CASCADE, related_name='resouces_roles')
+    status = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.resourcesId.path + '' + self.rolesId.name

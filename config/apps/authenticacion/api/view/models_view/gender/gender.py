@@ -70,7 +70,7 @@ class GenderUpdateView(UpdateAPIView):
 class GendersDestroyView(DestroyAPIView):
     queryset = Genders.objects.all()
     serializer_class = GenderSerializers
-    permission_classes = [IsAdminRole]
+    #permission_classes = [IsAdminRole]
 
     def get_object(self):
         try:
