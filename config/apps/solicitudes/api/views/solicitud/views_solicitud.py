@@ -48,8 +48,12 @@ class SolicitudDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk):
         solicitud = self.get_object(pk)
-        solicitud.delete()
+        if solicitud is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        solicitud.status = False  # Establecer el estado en "oculto"
+        solicitud.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

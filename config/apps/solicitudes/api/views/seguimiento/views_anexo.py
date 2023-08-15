@@ -44,6 +44,10 @@ class AnexosDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        anexos = self.get_object(pk)
-        anexos.delete()
+        anexo = self.get_object(pk)
+        if anexo is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        anexo.status = False  # Establecer el estado en "oculto"
+        anexo.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

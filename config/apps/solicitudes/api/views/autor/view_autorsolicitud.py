@@ -46,8 +46,10 @@ class AutorXSolicitudDetailAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        autor = self.get_object(pk)
-        if not autor:
+        autor_x_solicitud = self.get_object(pk)
+        if autor_x_solicitud is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        autor.delete()
+        
+        autor_x_solicitud.status = False  # Establecer el estado en "oculto"
+        autor_x_solicitud.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

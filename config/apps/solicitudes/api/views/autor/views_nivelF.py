@@ -44,6 +44,10 @@ class NivelFormacionDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        nivel_formacion = self.get_object(pk)
-        nivel_formacion.delete()
+        nivel = self.get_object(pk)
+        if nivel is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        nivel.status = False  
+        nivel.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

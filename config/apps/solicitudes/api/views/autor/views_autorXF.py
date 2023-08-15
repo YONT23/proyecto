@@ -43,6 +43,10 @@ class UsuarioXFormacionDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        usuarioxformacion = self.get_object(pk)
-        usuarioxformacion.delete()
+        usuario_x_formacion = self.get_object(pk)
+        if usuario_x_formacion is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        usuario_x_formacion.status = False  # Establecer el estado en "oculto"
+        usuario_x_formacion.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

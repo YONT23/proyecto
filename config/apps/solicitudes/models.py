@@ -133,13 +133,6 @@ class AutorXSolicitud(models.Model):
     def __str__(self):
         return f"{self.usuario.username} - {self.rolautor.nombre} - {self.solicitud.urls}"
         
-#class Asignaciones(models.Model):
-#    nombre = models.CharField(max_length=100)
-#    fecha_asignacion = models.DateField() 
-#    solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
-#    
-#    def __str__(self):
-#        return self.nombre
     
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)

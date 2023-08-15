@@ -44,7 +44,8 @@ class PasosSolicitudDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.delete()
+        instance.status = False  # Establecer el estado en "oculto"
+        instance.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
