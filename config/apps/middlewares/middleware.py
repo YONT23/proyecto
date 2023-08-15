@@ -15,12 +15,18 @@ class ServiceMiddleware:
             
             role_recursos = Resources.objects.all().prefetch_related('roles').values('path','titulo','roles').filter(roles__in= (rolUsuario))
             
+            #for rolerec in role_recursos:
+            #    print(rolerec)
+            
+            sw = 0  
             for rolerec in role_recursos:
-                print(rolerec)
-            #    if(url in rolerec.path):
-            #        sw = 1
-            #if(sw == 0):
-            #    return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")                    
+                if url in rolerec['path']:
+                    sw = 1  # Cambiar el interruptor a 1 si se encuentra el título en la URL
+                    break
+            
+            if sw == 0:
+                return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")
+                               
             
             #user_roles = [item['rolesId'] for item in rolUsuario]  
             #user_resources = self.get_user_resources(user_roles)
