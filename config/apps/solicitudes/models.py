@@ -103,15 +103,15 @@ class Seguimiento(models.Model):
     descripcion = models.CharField(max_length=256)
     estado = models.CharField(max_length=256)
     solicitud = models.ForeignKey(Solicitud,on_delete=models.CASCADE)
-    editor_responsable = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    evaluador_responsable = models.ForeignKey(CustomUser, related_name='editor_responsable_seguimientos', on_delete=models.CASCADE)
-    evaluador_responsable_2 = models.ForeignKey(CustomUser, related_name='editor_responsable_seguimientos_2', on_delete=models.CASCADE)
+    editor_responsable = models.ForeignKey(CustomUser,on_delete=models.CASCADE, related_name='editor_responsable')
+    evaluador_responsable = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='evaluador_responsable', null=True, blank=True)
+    evaluador_responsable_2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='evaluador_responsable_2', null=True, blank=True)
     resultados_evaluacion = models.CharField(max_length=3000, null=True, blank=True)
     resultados_evaluacion_2 = models.CharField(max_length=3000,  null=True, blank=True)
     pasos_solicitud = models.ForeignKey(PasosSolicitud,on_delete=models.CASCADE)
     status = models.BooleanField(default=True)
     
-    def __str__(self):
+    def _str_(self):
         return self.descripcion
 
 class Anexos(models.Model):

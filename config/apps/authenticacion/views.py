@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from rest_framework.permissions import AllowAny
+from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics, status
@@ -25,6 +26,10 @@ from helps.flatList import flatList
 
 from django.http import JsonResponse
 import bcrypt, logging
+
+
+from allauth.account.utils import send_email_confirmation
+
 
 class CustomUserListAPIView(APIView):
     permission_classes = (AllowAny,)
@@ -250,6 +255,24 @@ class RegistroView(APIView):
             user = serializer.save()
             return Response({'message': 'Registro exitoso'}, status=201)
         return Response(serializer.errors, status=400)
+
+
+#class RegistroView(APIView):
+#    def post(self, request):
+#        serializer = RegistroSerializzer(data=request.data)
+#        if serializer.is_valid():
+#            user = serializer.save()
+#
+#            self.send_confirmation_email(request, user)
+#
+#            return Response({'message': 'Registro exitoso. Se ha enviado un correo de confirmación.'}, status=201)
+#        return Response(serializer.errors, status=400)
+#
+#    def send_confirmation_email(self, request, user):
+#        """
+#        Envia un correo de confirmación al usuario.
+#        """
+#        send_email_confirmation(request, user)
 
 class AuthRegister(APIView):
     serializer_class = RegisterSerializers

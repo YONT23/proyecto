@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import environ
+from django.core.mail import send_mail
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -54,6 +55,10 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
     "whitenoise.runserver_nostatic",
     
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    
     'apps.authenticacion.apps.AuthenticacionConfig',
     'apps.pqrs.apps.PqrsConfig',
     'apps.solicitudes.apps.SolicitudesConfig',
@@ -84,7 +89,12 @@ ROOT_URLCONF = 'config.urls'
 # Custom user model
 AUTH_USER_MODEL = 'authenticacion.CustomUser'
 
-AUTHENTICATION_BACKENDS = ['apps.middlewares.EmailBackend.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    'apps.middlewares.EmailBackend.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 ACCOUNT_SESSION_REMEMBER = True
 
 CSRF_COOKIE_SAMESITE = 'Strict'
@@ -95,6 +105,18 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_DOMAIN = None
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+##  ENVIAR EMAILS ##
+
+SITE_ID = 1
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mendozaym01@gmail.com'
+EMAIL_HOST_PASSWORD = '12345678'
+
 
 TEMPLATES = [
     {
