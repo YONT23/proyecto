@@ -76,9 +76,13 @@ class UserUpdateView(UpdateAPIView):
         except CustomUser.DoesNotExist:
             return None
         except Exception as e:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', e)
-            return Response(response, status=code)
+            response = {
+                "ok": False,
+                "message": "Error de solicitud",
+                "errors": {"error": [str(e)]},
+                "request_id": ""
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_update(self, serializer):
         serializer.save()
@@ -88,23 +92,33 @@ class UserUpdateView(UpdateAPIView):
         user = self.get_object()
 
         if user is None:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Password Error', 'User Not found')
-            return Response(response, status=code)
+            response = {
+                "ok": False,
+                "message": "Usuario no encontrado",
+                "errors": {"error": ["Usuario no encontrado"]},
+                "request_id": ""
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            userSerializers = UserSerializer(
-                user, data=request.data, partial=partial)
-            if userSerializers.is_valid():
-                self.perform_update(userSerializers)
-                response, code = create_response(
-                    status.HTTP_400_BAD_REQUEST, 'Password Error', 'User Not found')
-                return Response(response, status=code)
-            return Response(userSerializers.errors, 'Error', status=status.HTTP_400_BAD_REQUEST)
-        except (AttributeError, Exception) as e:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Not Found', e.args)
-            return Response(response, status=code)
+        user_serializer = UserSerializer(
+            user, data=request.data, partial=partial)
+        if user_serializer.is_valid():
+            self.perform_update(user_serializer)
+            response = {
+                "ok": True,
+                "message": "Usuario actualizado exitosamente",
+                "request_id": ""
+            }
+            return Response(response)
+        else:
+            response = {
+                "ok": False,
+                "message": "Error de validación",
+                "errors": user_serializer.errors,
+                "request_id": ""
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
         
 class UserChangePasswordView(UpdateAPIView):
     queryset = CustomUser.objects.all()
