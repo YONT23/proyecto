@@ -29,7 +29,7 @@ class Pqrs(BaseModel):
 
 
 class Asignacion(BaseModel):
-    funcionarioId = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    asignadoId = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     fecha_asignacion = models.DateField(auto_now=True)
     pqrs = models.ForeignKey(Pqrs,on_delete=models.CASCADE)
 

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.authenticacion.models import (Document_types, Genders, Persons, Resources, Roles, CustomUser, 
                        User_roles, Resources_roles, Resources_roles, Roles)
+from django import forms
 
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError, Serializer, IntegerField
 
@@ -31,9 +32,10 @@ class DocumentSerializers(ModelSerializer):
                  
 #PERSON
 class PersonsSerializers(ModelSerializer):
-    document_type = DocumentSerializers(read_only=True)
-    gender_type = GenderSerializers(read_only=True)
-    user = UserSerializersSimple(read_only=True)
+    date_of_birth = forms.DateField(input_formats=['%Y-%m-%d'])
+    #document_type = DocumentSerializers(read_only=True)
+    #gender_type = GenderSerializers(read_only=True)
+    #user = UserSerializersSimple(read_only=True)
 
     class Meta:
         model = Persons

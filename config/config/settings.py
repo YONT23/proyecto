@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     
     'apps.authenticacion.apps.AuthenticacionConfig',
-    'apps.publication.apps.PublicationConfig',
     'apps.pqrs.apps.PqrsConfig',
     'apps.solicitudes.apps.SolicitudesConfig',
     
@@ -71,7 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
     #Middleware agregado
-    'apps.middlewares.middleware.ServiceMiddleware',
+    #'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,10 +82,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 
 # Custom user model
-#AUTH_USER_MODEL = "authenticacion.CustomUser"
 AUTH_USER_MODEL = 'authenticacion.CustomUser'
 
-AUTHENTICATION_BACKENDS = ['configs.backends.EmailBackend.EmailBackend']
+AUTHENTICATION_BACKENDS = ['apps.middlewares.EmailBackend.EmailBackend']
 ACCOUNT_SESSION_REMEMBER = True
 
 CSRF_COOKIE_SAMESITE = 'Strict'
