@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
     #Middleware agregado
-    #'apps.middlewares.middleware.ServiceMiddleware',
+    'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

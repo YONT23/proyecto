@@ -14,7 +14,6 @@ from django.http import HttpResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
 
 from .serializers import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer
-#from ...serializers.user.users_serializers import UserSerializers, CreateUserSerializers, UserChangePassword
 
 from .models import CustomUser
 from .mudules import create_response
@@ -27,7 +26,6 @@ from helps.flatList import flatList
 from django.http import JsonResponse
 import bcrypt, logging
 
-
 from allauth.account.utils import send_email_confirmation
 
 
@@ -38,6 +36,21 @@ class CustomUserListAPIView(APIView):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data)
+
+class UserDetailView(APIView):
+
+    def get(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except CustomUser.DoesNotExist:
+            response_data = {
+                "ok": False,
+                "message": "Usuario no encontrado",
+                "errors": {"error": ["Usuario no encontrado"]},
+            }
+            return Response(response_data, status=status.HTTP_404_NOT_FOUND)
 
 class UsersViewPublic(RetrieveAPIView):
     queryset = CustomUser.objects.all()
@@ -123,7 +136,6 @@ class UserUpdateView(UpdateAPIView):
                 "request_id": ""
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
         
 class UserChangePasswordView(UpdateAPIView):
     queryset = CustomUser.objects.all()
@@ -182,8 +194,6 @@ class UserChangePasswordView(UpdateAPIView):
             return Response(response, status=code)
 
 class AuthLogin(APIView):
-
-    #permission_classes = (IsAuthenticated,)
     
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
@@ -222,8 +232,6 @@ class AuthLogin(APIView):
                                                   'menu': menu.data})
         return Response(response, status=code)
 
-
-
 class AuthRegister1(APIView):
     serializer_class = RegisterUserSerializer
 
@@ -256,24 +264,6 @@ class RegistroView(APIView):
             return Response({'message': 'Registro exitoso'}, status=201)
         return Response(serializer.errors, status=400)
 
-
-#class RegistroView(APIView):
-#    def post(self, request):
-#        serializer = RegistroSerializzer(data=request.data)
-#        if serializer.is_valid():
-#            user = serializer.save()
-#
-#            self.send_confirmation_email(request, user)
-#
-#            return Response({'message': 'Registro exitoso. Se ha enviado un correo de confirmación.'}, status=201)
-#        return Response(serializer.errors, status=400)
-#
-#    def send_confirmation_email(self, request, user):
-#        """
-#        Envia un correo de confirmación al usuario.
-#        """
-#        send_email_confirmation(request, user)
-
 class AuthRegister(APIView):
     serializer_class = RegisterSerializers
 
@@ -291,8 +281,7 @@ class AuthRegister(APIView):
         response, code = create_response(
             status.HTTP_400_BAD_REQUEST, 'Error', registerUser.errors)
         return Response(response, status=code)
-    
-    
+      
 class LogoutView(APIView):
     def get(self, request, *args, **kwargs):
         try:
