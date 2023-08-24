@@ -4,12 +4,15 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+
 from ....models import *
 from ...serializers.literatura.literatura_serilizers import ContenidoSolicitudSerializer
 
 class ContenidoSolicitudList(APIView):
     def get(self, request):
-        contenidos = ContenidoSolicitud.objects.all()
+        contenidos = ContenidoSolicitud.objects.filter(status=True)
         serializer = ContenidoSolicitudSerializer(contenidos, many=True)
         data = {'contenidos': serializer.data}
         return Response(data)
@@ -24,7 +27,7 @@ class ContenidoSolicitudList(APIView):
 class ContenidoSolicitudDetail(APIView):
     def get_object(self, pk):
         try:
-            return ContenidoSolicitud.objects.get(pk=pk)
+            return ContenidoSolicitud.objects.get(pk=pk, status=True)
         except ContenidoSolicitud.DoesNotExist:
             raise Http404
 
@@ -50,3 +53,9 @@ class ContenidoSolicitudDetail(APIView):
         contenido_solicitud.status = False  # Establecer el estado en "oculto"
         contenido_solicitud.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def descargar_archivo(request, pk):
+    contenido = get_object_or_404(ContenidoSolicitud, pk=pk, status=True)
+    archivo = contenido.archivo_adjunto
+    response = FileResponse(archivo)
+    return response

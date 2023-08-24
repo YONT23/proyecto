@@ -55,15 +55,16 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
     "whitenoise.runserver_nostatic",
     
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
+    #'django.contrib.sites',
+    #'allauth',
+    #'allauth.account',
     
     'apps.authenticacion.apps.AuthenticacionConfig',
     'apps.pqrs.apps.PqrsConfig',
-    'apps.solicitudes.apps.SolicitudesConfig',
-    
+    'apps.solicitudes.apps.SolicitudesConfig',   
 ]
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -75,7 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
     #Middleware agregado
-    'apps.middlewares.middleware.ServiceMiddleware',
+    #'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,7 +93,7 @@ AUTH_USER_MODEL = 'authenticacion.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'apps.middlewares.EmailBackend.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    #'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ACCOUNT_SESSION_REMEMBER = True
@@ -109,13 +110,13 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ##  ENVIAR EMAILS ##
 
-SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587  
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mendozaym01@gmail.com'
-EMAIL_HOST_PASSWORD = '12345678'
+#SITE_ID = 1
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587  
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'mendozaym01@gmail.com'
+#EMAIL_HOST_PASSWORD = '12345678'
 
 
 TEMPLATES = [
@@ -147,7 +148,7 @@ PASSWORD_HASHERS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_config',
+        'NAME': 'backend',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 class SolicitudList(APIView):
-    #permission_classes = (IsAuthenticated,)
     
     def get(self, request, format=None):
         solicitudes = Solicitud.objects.all()
@@ -27,7 +26,7 @@ class SolicitudList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class SolicitudDetail(APIView):
-    permission_classes = (IsAuthenticated,)
+    
     def get_object(self, pk):
         try:
             return Solicitud.objects.get(pk=pk)
@@ -53,7 +52,7 @@ class SolicitudDetail(APIView):
         if solicitud is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        solicitud.status = False  # Establecer el estado en "oculto"
+        solicitud.status = False  
         solicitud.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

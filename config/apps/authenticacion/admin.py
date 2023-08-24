@@ -13,7 +13,6 @@ admin.site.register(Document_types)
 admin.site.register(Resources)
 admin.site.register(Resources_roles)
 admin.site.register(Roles)
-#admin.site.register(User);
 admin.site.register(User_roles)
 
 @admin.register(get_user_model())
