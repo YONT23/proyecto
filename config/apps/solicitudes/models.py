@@ -64,6 +64,7 @@ class Seguimiento(models.Model):
     pasos_seguimiento = models.ForeignKey(PasosSeguimiento,on_delete=models.CASCADE, related_name='pasos_seguimiento')
     estado_seguimiento = models.ForeignKey(EstadoSeguimiento,on_delete=models.CASCADE, related_name='estado_seguimiento')
     responsableId = models.ForeignKey(CustomUser,on_delete=models.CASCADE, related_name='responsable')
+    correciones = models.FileField(upload_to='archivos_adjuntos/')
     status = models.BooleanField(default=True)
     
     def __str__(self):

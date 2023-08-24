@@ -34,7 +34,6 @@ class UserValidatorBefore:
             smart_repr(self.username)
         )
 
-
 class ChangeValidator:
     def __init__(self, password='password'):
         self.password = password

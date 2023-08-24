@@ -5,6 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+
 from ....models import Seguimiento
 from ...serializers.seguimiento.seguimiento_serializers import SeguimientoSerializer
 
@@ -51,3 +54,17 @@ class SeguimientoDetail(APIView):
         seguimiento.status = False  # Establecer el estado en "oculto"
         seguimiento.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def descargar_archivo(request, pk):
+    seguimiento = get_object_or_404(Seguimiento, pk=pk, status=True)
+    archivo = seguimiento.correciones
+    if archivo:
+        response = FileResponse(archivo)
+        return response
+    else:
+        raise Http404("Archivo no encontrado")
+
+
+
+
+
