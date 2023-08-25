@@ -8,8 +8,9 @@ from ....models import Anexos
 from ...serializers.seguimiento.seguimiento_serializers import AnexosSerializer
 
 class AnexosList(APIView):
+    
     def get(self, request):
-        anexos = Anexos.objects.all()
+        anexos = Anexos.objects.filter(status=True)  # Filtrar por status=True
         serializer = AnexosSerializer(anexos, many=True)
         data = {'anexos': serializer.data}
         return Response(data)
@@ -23,6 +24,7 @@ class AnexosList(APIView):
 
 
 class AnexosDetail(APIView):
+    
     def get_object(self, pk):
         try:
             return Anexos.objects.get(pk=pk)
@@ -30,10 +32,16 @@ class AnexosDetail(APIView):
             raise Http404
 
     def get(self, request, pk):
-        anexos = self.get_object(pk)
-        serializer = AnexosSerializer(anexos)
-        data = {'anexo': serializer.data}
-        return Response(data)
+        anexo = self.get_object(pk)
+
+        # Check if status is True before serializing and returning the data
+        if anexo.status:
+            serializer = AnexosSerializer(anexo)
+            data = {'anexo': serializer.data}
+            return Response(data)
+        else:
+            # Return a 404 response when status is False
+            return Response('No encontrado... Realice otra busquedad.',status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk):
         anexos = self.get_object(pk)

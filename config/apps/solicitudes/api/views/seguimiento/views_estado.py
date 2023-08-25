@@ -7,7 +7,7 @@ from ...serializers.seguimiento.seguimiento_serializers import EstadoSeguimiento
 
 class EstadoSeguimientoList(APIView):
     def get(self, request):
-        estados_seguimiento = EstadoSeguimiento.objects.all()
+        estados_seguimiento = EstadoSeguimiento.objects.filter(status=True)  # Filtrar por status=True
         serializer = EstadoSeguimientoSerializer(estados_seguimiento, many=True)
         return Response(serializer.data)
 
@@ -27,8 +27,11 @@ class EstadoSeguimientoDetail(APIView):
 
     def get(self, request, pk):
         estado_seguimiento = self.get_object(pk)
-        serializer = EstadoSeguimientoSerializer(estado_seguimiento)
-        return Response(serializer.data)
+        if estado_seguimiento.status:
+            serializer = EstadoSeguimientoSerializer(estado_seguimiento)
+            return Response(serializer.data)
+        else:
+            return Response('No encontrado... Realice otra busquedad.',status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk):
         estado_seguimiento = self.get_object(pk)

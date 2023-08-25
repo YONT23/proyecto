@@ -26,7 +26,7 @@ from helps.flatList import flatList
 from django.http import JsonResponse
 import bcrypt, logging
 
-from allauth.account.utils import send_email_confirmation
+#from allauth.account.utils import send_email_confirmation
 
 
 class CustomUserListAPIView(APIView):
@@ -220,9 +220,22 @@ class AuthLogin(APIView):
         login(request, serializers.validated_data)
         token = self.get_tokens_for_user(serializers.validated_data)
 
+        """
+            Obtiene y aplana la lista de recursos relacionados con los roles del usuario autenticado.
+
+            Esta línea de código recupera los recursos relacionados con los roles del usuario autenticado,
+            los cuales están almacenados en la propiedad 'resources' de los objetos 'Role'. Luego, utiliza
+            el método 'prefetch_related' para optimizar las consultas y obtener los recursos de manera eficiente.
+
+            Args:
+                serializers.validated_data.roles.all(): Los roles asociados al usuario autenticado.
+
+            Returns:
+                list: Una lista plana de recursos relacionados con los roles del usuario.
+        """
         resources = flatList([e.resources.prefetch_related(
             'resources') for e in serializers.validated_data.roles.all()])
-    
+   
         menu = ResourcesSerializers(set(resources), many=True)
 
         request.session['refresh-token'] = token['refresh']

@@ -13,7 +13,7 @@ class PasosSeguimientoList(generics.ListCreateAPIView):
     serializer_class = PasosSeguimientoSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = PasosSeguimiento.objects.filter(status=True)  # Filtrar por status=True
         serializer = self.get_serializer(queryset, many=True)
         data = {'pasos_seguimiento': serializer.data}
         return Response(data)

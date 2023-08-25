@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 class SolicitudList(APIView):
     
     def get(self, request, format=None):
-        solicitudes = Solicitud.objects.all()
+        solicitudes = Solicitud.objects.filter(status=True)  # Filtrar por status=True
         serializer = SolicitudSerializer(solicitudes, many=True)
         data = {'solicitudes': serializer.data}
         return Response(data)
@@ -26,7 +26,6 @@ class SolicitudList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class SolicitudDetail(APIView):
-    
     def get_object(self, pk):
         try:
             return Solicitud.objects.get(pk=pk)
@@ -35,9 +34,16 @@ class SolicitudDetail(APIView):
 
     def get(self, request, pk, format=None):
         solicitud = self.get_object(pk)
-        serializer = SolicitudSerializer(solicitud)
-        data = {'solicitud': serializer.data}
-        return Response(data)
+        
+        # Check if status is True before serializing and returning the data
+        if solicitud.status:
+            serializer = SolicitudSerializer(solicitud)
+            data = {'solicitud': serializer.data}
+            return Response(data)
+        else:
+            # Return a 404 response when status is False
+            print("No encontrado")
+            return Response('No encontrado',status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk, format=None):
         solicitud = self.get_object(pk)

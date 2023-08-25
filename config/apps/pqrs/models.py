@@ -27,7 +27,6 @@ class Pqrs(BaseModel):
     class Meta:
         verbose_name = 'Pqrs'
 
-
 class Asignacion(BaseModel):
     asignadoId = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     fecha_asignacion = models.DateField(auto_now=True)

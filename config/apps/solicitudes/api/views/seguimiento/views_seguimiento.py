@@ -13,7 +13,7 @@ from ...serializers.seguimiento.seguimiento_serializers import SeguimientoSerial
 
 class SeguimientoList(APIView):
     def get(self, request):
-        seguimientos = Seguimiento.objects.all()
+        seguimientos = Seguimiento.objects.filter(status=True)  # Filtrar por status=True
         serializer = SeguimientoSerializer(seguimientos, many=True)
         data = {'seguimientos': serializer.data}
         return Response(data)
@@ -34,9 +34,12 @@ class SeguimientoDetail(APIView):
 
     def get(self, request, pk):
         seguimiento = self.get_object(pk)
-        serializer = SeguimientoSerializer(seguimiento)
-        data = {'seguimiento': serializer.data}
-        return Response(data)
+        if seguimiento.status:
+            serializer = SeguimientoSerializer(seguimiento)
+            data = {'seguimiento': serializer.data}
+            return Response(data)
+        else:
+            return Response('No encontrado... Realice otra busquedad.',status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, pk):
         seguimiento = self.get_object(pk)
