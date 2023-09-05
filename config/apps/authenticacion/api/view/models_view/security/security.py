@@ -23,7 +23,6 @@ class SecurityResourcesCreate(CreateAPIView):
                 status.HTTP_400_BAD_REQUEST, 'Error', e.args[0])
             return Response(response, status=code)
 
-
 class SecurityRolesUser(CreateAPIView):
     queryset = User_roles.objects.all()
     serializer_class = RolesUserSerializers

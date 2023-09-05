@@ -58,16 +58,16 @@ class EstadoSeguimiento(models.Model):
         
 class Seguimiento(models.Model):
     solicitudId = models.ForeignKey(Solicitud,on_delete=models.CASCADE) 
-    fecha_asignacion = models.DateField()
-    fecha_programacion = models.DateField()
-    fecha_evaluacion = models.DateField()
+    fecha_asignacion = models.DateField(null=True, blank=True)
+    fecha_programacion = models.DateField(null=True, blank=True)
+    fecha_evaluacion = models.DateField(null=True, blank=True)
     pasos_seguimiento = models.ForeignKey(PasosSeguimiento,on_delete=models.CASCADE, related_name='pasos_seguimiento')
-    estado_seguimiento = models.ForeignKey(EstadoSeguimiento,on_delete=models.CASCADE, related_name='estado_seguimiento')
-    responsableId = models.ForeignKey(CustomUser,on_delete=models.CASCADE, related_name='responsable')
-    correciones = models.FileField(upload_to='archivos_adjuntos/')
+    estado_seguimiento = models.ForeignKey(EstadoSeguimiento, on_delete=models.CASCADE, related_name='estado_seguimiento', null=True, blank=True)
+    responsableId = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='responsable', null=True, blank=True)
+    correciones = models.FileField(upload_to='archivos_adjuntos/', null=True, blank=True)
     status = models.BooleanField(default=True)
     
-    def __str__(self):
+    def _str_(self):
         return str(self.solicitudId)
 
 class Anexos(models.Model):

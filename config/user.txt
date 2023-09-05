@@ -1,6 +1,6 @@
 {
-  "username": "elsa",
-  "password": "123456789"
+  "username": "elsaleonor",
+  "password": "12345678e"
 }
 
 
@@ -16,15 +16,8 @@
 {
   "username": "ejemplo3",
   "password": "123456789",
-    "email": "ejemplo3@gmail.com",
-    "first_name": "ejemplo3",
-    "last_name": "ejem"
+  "email": "ejemplo3@gmail.com",
+  "first_name": "ejemplo3",
+  "last_name": "ejem"
 }
 
-
-
-################ PENDIENTE ######################################
-que solo admita seguimientos con solicitudes diferentes a las que existen 
-si hay un sgm que ya tenga la solicitud seleci deb mandar err 
-
-################## Dejar login register como predeterminada

@@ -24,7 +24,6 @@ class ServiceMiddleware:
             if sw == 0:
                 return HttpResponseForbidden("Acceso denegado. El usuario no tiene acceso a esta ruta.")
                                         
-  
         print(url)
         response = self.get_response(request)
         return response

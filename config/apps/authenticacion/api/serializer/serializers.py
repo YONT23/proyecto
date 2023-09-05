@@ -4,7 +4,7 @@ from apps.authenticacion.models import (Document_types, Genders, Persons, Resour
 from django import forms
 
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError, Serializer, IntegerField
-
+from django.utils import timezone
 from ...mudules import create_response, menuResources
 
 class UserSerializersSimple(ModelSerializer):
@@ -31,15 +31,12 @@ class DocumentSerializers(ModelSerializer):
         fields = '__all__'   
                  
 #PERSON
-class PersonsSerializers(ModelSerializer):
-    date_of_birth = forms.DateField(input_formats=['%Y-%m-%d'])
-    #document_type = DocumentSerializers(read_only=True)
-    #gender_type = GenderSerializers(read_only=True)
-    #user = UserSerializersSimple(read_only=True)
 
+class PersonsSerializers(serializers.ModelSerializer):
     class Meta:
         model = Persons
         fields = '__all__'
+
 
 class PersonsSimpleSerializers(ModelSerializer):
     document_type = DocumentSerializers(read_only=True)

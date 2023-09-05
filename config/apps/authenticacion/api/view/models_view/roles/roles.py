@@ -111,8 +111,7 @@ class UserRolesCreateAPIView(CreateAPIView):
             return Response(response, status=code)
         response, code = create_response(
             status.HTTP_400_BAD_REQUEST, 'Error', userroles.errors)
-        return Response(response, status=code)
-    
+        return Response(response, status=code)   
 
 class User_rolesDetailView(APIView):
     def get_object(self, pk):
