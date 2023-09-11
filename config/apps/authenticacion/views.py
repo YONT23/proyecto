@@ -23,27 +23,21 @@ from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers,
 from apps.authenticacion.api.serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
 
 import bcrypt, logging
-
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
 #from allauth.account.utils import send_email_confirmation
 
 class CustomUserListAPIView(APIView):
-
     def get(self, request):
         users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many=True)
+        serializer = CustomUserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
     
-## AVATAR ##
-
-class AvatarView(APIView):
-    def get(self, request, pk):
-        try:
-            user = CustomUser.objects.get(id=pk)
-        except CustomUser.DoesNotExist:
-            return Response({'error': 'El usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+def descargar_archivo(request, pk):
+    contenido = get_object_or_404(CustomUser, pk=pk, is_active=True)
+    archivo = contenido.avatar
+    response = FileResponse(archivo)
+    return response
 
 ##  USER ##
 

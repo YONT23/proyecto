@@ -9,11 +9,18 @@ from .models import CustomUser
 from .api.serializer.serializers import RolesSerializers
 from .api.serializer.customValidators import UserValidatorBefore
 User = get_user_model()
-
+    
 class CustomUserSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'avatar']
+        fields = ('id', 'username', 'email', 'avatar_url')
+        
+    def get_avatar_url(self, user):
+        if user.avatar:
+            return self.context['request'].build_absolute_uri(user.avatar.url)
+        return None
 
 class UserChangePassword(ModelSerializer):
     password = CharField()

@@ -1,8 +1,7 @@
 from django.urls import path, include
 from .views import (AuthLogin, LogoutView, ProfileView, RegistroView,
                     UsersViewPublic, UserCreateView,  UserUpdateView, UserDetailView, 
-                    CustomUserListAPIView, UserChangePasswordView, AvatarView)
-from . import views
+                    CustomUserListAPIView, UserChangePasswordView, descargar_archivo)
 
 urlpatterns = [
     # Auth views
@@ -15,8 +14,9 @@ urlpatterns = [
     path('user/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('user/createview/', UserCreateView.as_view(), name='user_createview'),
     path('user/update/<int:pk>/', UserUpdateView.as_view(), name='user_createview'),
-
-    path('user/avatar/<int:user_id>/', AvatarView.as_view(), name='view_avatar'),
+    
+    path('user/<int:pk>/descargar/', descargar_archivo, name='descargar-archivo'), 
+ 
     
     path('user/profile/', ProfileView.as_view(), name='user_profile'),
     
