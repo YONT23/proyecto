@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
+import os
 
 from ....models import *
 from ...serializers.literatura.literatura_serilizers import ContenidoSolicitudSerializer

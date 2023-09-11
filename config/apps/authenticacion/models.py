@@ -10,14 +10,11 @@ class CustomUser(AbstractUser):
         ("email address"), blank=False, null=False, unique=True)
     password = models.CharField(max_length=100)
     resetToken = models.CharField(max_length=256, blank=True, null=True)
-    avatar = models.ImageField()
+    avatar = models.ImageField(upload_to='archivos/archivos_useravatar/', blank=True, null=True)
     roles = models.ManyToManyField(
         'Roles', through='User_roles', related_name='user_roles')
 
     objects = UserManager()
-    
-    #class Meta:
-        #unique_together = (('username', 'email'))
     
 class BaseModel(models.Model):
     createdAt = models.DateField(auto_now_add=True)
@@ -112,7 +109,6 @@ class Resources(BaseModel):
     titulo = models.CharField(max_length=100)
     roles = models.ManyToManyField(
         Roles, through='Resources_roles', related_name='resources_roles')
-    #status = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.titulo} - {self.roles.name}"
@@ -126,7 +122,6 @@ class Resources_roles(BaseModel):
         Resources, on_delete=models.CASCADE, related_name='resources')
     rolesId = models.ForeignKey(
         Roles, on_delete=models.CASCADE, related_name='resouces_roles')
-    #status = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.resourcesId.path + '' + self.rolesId.name

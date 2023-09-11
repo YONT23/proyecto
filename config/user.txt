@@ -1,3 +1,4 @@
+#User Login
 {
   "username": "elsaleonor",
   "password": "12345678e"
@@ -12,7 +13,7 @@
   "estado": "2"
 }
 
-
+#Crear Persona
 {
   "username": "ejemplo3",
   "password": "123456789",
@@ -21,3 +22,7 @@
   "last_name": "ejem"
 }
 
+#Pendientes !!
+{
+  hacer una vista a avatar, y userXformacion a los nuevos elementos
+}

@@ -1,41 +1,51 @@
+from django.http import HttpResponse
+from django.http import JsonResponse
 from django.dispatch import receiver
+from django.shortcuts import render
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django_rest_passwordreset.signals import reset_password_token_created
 
-from rest_framework.permissions import AllowAny
-from django.core.mail import send_mail
-from rest_framework.permissions import IsAuthenticated
-
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import HttpResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
-
-from .serializers import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer
+from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import CustomUser
 from .mudules import create_response
-
+from helps.flatList import flatList
+from .serializers import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer
 from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers,RegistroSerializzer, RegisterSerializers, RegisterUserSerializer
 from apps.authenticacion.api.serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
-from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from helps.flatList import flatList
 
-from django.http import JsonResponse
 import bcrypt, logging
 
 #from allauth.account.utils import send_email_confirmation
 
-
 class CustomUserListAPIView(APIView):
-    permission_classes = (AllowAny,)
 
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data)
+    
+## AVATAR ##
+
+class AvatarView(APIView):
+    def get(self, request, pk):
+        try:
+            user = CustomUser.objects.get(id=pk)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'El usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
+
+##  USER ##
 
 class UserDetailView(APIView):
 
@@ -245,22 +255,6 @@ class AuthLogin(APIView):
                                                   'menu': menu.data})
         return Response(response, status=code)
 
-class AuthRegister1(APIView):
-    serializer_class = RegisterUserSerializer
-
-    def post(self, request, *args, **kwargs):
-        registerUser = RegisterUserSerializer(data=request.data)
-        if registerUser.is_valid():
-            password = make_password(
-                registerUser.validated_data['password'])
-            registerUser.save(password=password)
-            response, code = create_response(
-                status.HTTP_200_OK, 'User Register', 'Registro Exitosos')
-            return Response(response, status=code)
-        response, code = create_response(
-            status.HTTP_400_BAD_REQUEST, 'Error', registerUser.errors)
-        return Response(response, status=code)
-
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     http_method_names = ['get', 'patch']
@@ -276,24 +270,6 @@ class RegistroView(APIView):
             user = serializer.save()
             return Response({'message': 'Registro exitoso'}, status=201)
         return Response(serializer.errors, status=400)
-
-class AuthRegister(APIView):
-    serializer_class = RegisterSerializers
-
-    def post(self, request, *args, **kwargs):
-        registerUser = RegisterSerializers(data=request.data)
-        if registerUser.is_valid():
-            password = make_password(
-                registerUser.validated_data['password'])
-            user = registerUser.create(registerUser.validated_data)  # Llamar al método create() personalizado
-            user.set_password(password)  # Establecer la contraseña en el usuario
-            user.save()  # Guardar el usuario en la base de datos
-            response, code = create_response(
-                status.HTTP_200_OK, 'User Register', 'Registro Exitosos')
-            return Response(response, status=code)
-        response, code = create_response(
-            status.HTTP_400_BAD_REQUEST, 'Error', registerUser.errors)
-        return Response(response, status=code)
       
 class LogoutView(APIView):
     def get(self, request, *args, **kwargs):

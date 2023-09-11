@@ -14,7 +14,7 @@ class ContenidoSolicitud(models.Model):
     result_discu = models.CharField(max_length=2000)
     agradecimientos = models.CharField(max_length=1500)
     literact_citada = models.CharField(max_length=2000)
-    archivo_adjunto = models.FileField(upload_to='archivos_adjuntos/')
+    archivo_adjunto = models.FileField(upload_to='archivos/archivos_contenido_solicitud/')
     status = models.BooleanField(default=True)
     
     def __str__(self):
@@ -64,7 +64,7 @@ class Seguimiento(models.Model):
     pasos_seguimiento = models.ForeignKey(PasosSeguimiento,on_delete=models.CASCADE, related_name='pasos_seguimiento')
     estado_seguimiento = models.ForeignKey(EstadoSeguimiento, on_delete=models.CASCADE, related_name='estado_seguimiento', null=True, blank=True)
     responsableId = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='responsable', null=True, blank=True)
-    correciones = models.FileField(upload_to='archivos_adjuntos/', null=True, blank=True)
+    correciones = models.FileField(upload_to='archivos/archivos_seguimiento/', null=True, blank=True)
     status = models.BooleanField(default=True)
     
     def _str_(self):
@@ -103,10 +103,10 @@ class NivelFormacion(models.Model):
 class UsuarioXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_grado = models.CharField(max_length=256)
-    resol_conv = models.CharField(max_length=256)
-    cert_grado = models.CharField(max_length=256)
+    resol_conv = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
+    cert_grado = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     nombre_institucion = models.CharField(max_length=256)
-    cert_resol = models.CharField(max_length=256)
+    cert_resol = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
     autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     status = models.BooleanField(default=True)

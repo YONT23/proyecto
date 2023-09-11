@@ -32,7 +32,7 @@ class CreateUserSerializers(ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'email')
+        fields = ('username', 'password', 'email', 'avatar')
         validators = [UserValidatorBefore()]
 
 class UserSerializersSimpleRegister(ModelSerializer):

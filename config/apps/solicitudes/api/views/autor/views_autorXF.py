@@ -7,6 +7,11 @@ from rest_framework.response import Response
 from ....models import UsuarioXFormacion
 from ...serializers.autor.autor_Serializers import UsuarioXFormacionSerializer
 
+from django.shortcuts import get_object_or_404, render
+from django.http import FileResponse
+from django.views import View
+from django.http import HttpResponse
+
 class UsuarioXFormacionList(APIView):
     def get(self, request):
         usuarioxformacion = UsuarioXFormacion.objects.all()
@@ -49,4 +54,44 @@ class UsuarioXFormacionDetail(APIView):
         
         usuario_x_formacion.status = False  # Establecer el estado en "oculto"
         usuario_x_formacion.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)   
+
+def descargar_archivo(request, archivo):
+    if archivo:
+        response = FileResponse(archivo)
+        return response
+    else:
+        return HttpResponse("Archivo no encontrado", status=404)
+
+def descargar_resol_conv(request, pk):
+    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+    return descargar_archivo(request, contenido.resol_conv)
+
+def descargar_cert_grado(request, pk):
+    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+    return descargar_archivo(request, contenido.cert_grado)
+
+def descargar_cert_resol(request, pk):
+    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+    return descargar_archivo(request, contenido.cert_resol)
+
+
+
+#def descargar_resol_conv(request, pk):
+#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+#    archivo = contenido.resol_conv
+#    response = FileResponse(archivo)
+#    return response
+#
+#def descargar_cert_grado(request, pk):
+#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+#    archivo = contenido.cert_grado
+#    response = FileResponse(archivo)
+#    return response
+#
+#def descargar_cert_resol(request, pk):
+#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
+#    archivo = contenido.cert_resol
+#    response = FileResponse(archivo)
+#    return response
+#
