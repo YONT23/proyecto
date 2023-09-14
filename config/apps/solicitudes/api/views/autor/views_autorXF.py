@@ -1,7 +1,7 @@
 from django.http import Http404
 
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 
 from ....models import UsuarioXFormacion
@@ -12,49 +12,38 @@ from django.http import FileResponse
 from django.views import View
 from django.http import HttpResponse
 
-class UsuarioXFormacionList(APIView):
-    def get(self, request):
-        usuarioxformacion = UsuarioXFormacion.objects.all()
-        serializer = UsuarioXFormacionSerializer(usuarioxformacion, many=True)
-        data = {'usuarioxformacion': serializer.data}
-        return Response(data)
-
-    def post(self, request):
-        serializer = UsuarioXFormacionSerializer(data=request.data)
+class UsuarioXFormacionList(generics.ListCreateAPIView):
+    queryset = UsuarioXFormacion.objects.filter(status=True)
+    serializer_class = UsuarioXFormacionSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UsuarioXFormacionDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return UsuarioXFormacion.objects.get(pk=pk)
-        except UsuarioXFormacion.DoesNotExist:
-            raise Http404
+class UsuarioXFormacionDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UsuarioXFormacion.objects.filter(status=True)
+    serializer_class = UsuarioXFormacionSerializer
 
-    def get(self, request, pk):
-        usuarioxformacion = self.get_object(pk)
-        serializer = UsuarioXFormacionSerializer(usuarioxformacion)
-        data = {'usuarioxformacion': serializer.data}
-        return Response(data)
+    def perform_destroy(self, instance):
+        # Cambia el estado booleano en lugar de eliminar el objeto
+        instance.status = False
+        instance.save()
 
-    def put(self, request, pk):
-        usuarioxformacion = self.get_object(pk)
-        serializer = UsuarioXFormacionSerializer(usuarioxformacion, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance is None:
+            return Response({'detail': 'UsuarioXFormacion no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, pk):
-        usuario_x_formacion = self.get_object(pk)
-        if usuario_x_formacion is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        usuario_x_formacion.status = False  # Establecer el estado en "oculto"
-        usuario_x_formacion.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)   
+        # Verificar si el estado es True antes de cambiarlo o eliminarlo
+        if instance.status:
+            self.perform_destroy(instance)
+            return Response({'detail': 'UsuarioXFormacion ocultado exitosamente'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'detail': 'El UsuarioXFormacion ya está oculto'}, status=status.HTTP_400_BAD_REQUEST)  
 
 def descargar_archivo(request, archivo):
     if archivo:
@@ -74,24 +63,3 @@ def descargar_cert_grado(request, pk):
 def descargar_cert_resol(request, pk):
     contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
     return descargar_archivo(request, contenido.cert_resol)
-
-
-
-#def descargar_resol_conv(request, pk):
-#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
-#    archivo = contenido.resol_conv
-#    response = FileResponse(archivo)
-#    return response
-#
-#def descargar_cert_grado(request, pk):
-#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
-#    archivo = contenido.cert_grado
-#    response = FileResponse(archivo)
-#    return response
-#
-#def descargar_cert_resol(request, pk):
-#    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
-#    archivo = contenido.cert_resol
-#    response = FileResponse(archivo)
-#    return response
-#

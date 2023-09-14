@@ -1,19 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import Persons, Genders, Document_types, Resources,  Resources_roles, Roles, User_roles, CustomUser
+from .models import Person, Gender, Document_type, Resource,  Resource_rol, Rol, User_rol, CustomUser
 
 
 from django.contrib.auth.models import Group  
 
 
-admin.site.register(Persons)
-admin.site.register(Genders)
-admin.site.register(Document_types)
-admin.site.register(Resources)
-admin.site.register(Resources_roles)
-admin.site.register(Roles)
-admin.site.register(User_roles)
+admin.site.register(Person)
+admin.site.register(Gender)
+admin.site.register(Document_type)
+admin.site.register(Resource)
+admin.site.register(Resource_rol)
+admin.site.register(Rol)
+admin.site.register(User_rol)
 
 @admin.register(get_user_model())
 class CustomUserAdmin(UserAdmin):

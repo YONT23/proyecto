@@ -1,7 +1,6 @@
 from django.urls import path, include
-from .views import (AuthLogin, LogoutView, ProfileView, RegistroView,
-                    UsersViewPublic, UserCreateView,  UserUpdateView, UserDetailView, 
-                    CustomUserListAPIView, UserChangePasswordView, descargar_archivo)
+from .api.view.models_view.users.auth import (CustomUserList,UserDetail,UserPublic,UserCreate,UserUpdate,ProfileView,  
+                   RegistroView,AuthLogin, LogoutView,UserChangePasswordView ,descargar_archivo)
 
 urlpatterns = [
     # Auth views
@@ -10,18 +9,16 @@ urlpatterns = [
     path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
     
     # User 
-    path('user/', CustomUserListAPIView.as_view(), name='customuser-list'),
-    path('user/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
-    path('user/createview/', UserCreateView.as_view(), name='user_createview'),
-    path('user/update/<int:pk>/', UserUpdateView.as_view(), name='user_createview'),
-    
-    path('user/<int:pk>/descargar/', descargar_archivo, name='descargar-archivo'), 
- 
+    path('user/', CustomUserList.as_view(), name='customuser-list'),
+    path('user/<int:pk>/descargar/', descargar_archivo, name='descargar-archivo'),
+    path('user/<int:pk>/', UserDetail.as_view(), name='user-detail'),
+    path('user/createview/', UserCreate.as_view(), name='user_createview'),
+    path('user/update/<int:pk>/', UserUpdate.as_view(), name='user_createview'),
     
     path('user/profile/', ProfileView.as_view(), name='user_profile'),
     
     #User Publico
-    path('user/viewpublic/', UsersViewPublic.as_view(), name='user_viewpublic'),
+    path('user/viewpublic/', UserPublic.as_view(), name='user_viewpublic'),
     
     path('<int:pk>/change/password/', UserChangePasswordView.as_view(), name='user_changepassword'),   
     path('auth/reset/', include('django_rest_passwordreset.urls',

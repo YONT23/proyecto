@@ -1,92 +1,39 @@
-from .....mudules import (CreateAPIView, ListAPIView, UpdateAPIView, status, 
-                          Response, create_response,IsAdminRole,DestroyAPIView)
-from apps.authenticacion.models import Genders
+from .....mudules import (status, Response, create_response)
+from apps.authenticacion.models import Gender
 from ....serializer.serializers import GenderSerializers
+from rest_framework import generics
 
-
-class GenderListView(ListAPIView):
-    queryset = Genders.objects.all()
+class GenderList(generics.ListCreateAPIView):
+    queryset = Gender.objects.filter(status=True)
     serializer_class = GenderSerializers
 
-    def get(self, request, *args, **kwargs):
-        data = self.get_queryset()
-        serializers = GenderSerializers(data, many=True)
+class GenderDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Gender.objects.all()
+    serializer_class = GenderSerializers
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            response, code = create_response(
+                status.HTTP_200_OK, 'Gender Update', serializer.data)
+            return Response(response, status=code)
         response, code = create_response(
-            status.HTTP_200_OK, 'Genders', serializers.data)
+            status.HTTP_400_BAD_REQUEST, 'Error', serializer.errors)
         return Response(response, status=code)
 
-
-class GenderCreateView(CreateAPIView):
-    queryset = Genders.objects.all()
-    serializer_class = GenderSerializers
-
-    def post(self, request, *args, **kwargs):
-        genderSerializers = GenderSerializers(data=request.data)
-        if genderSerializers.is_valid():
-            genderSerializers.save()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance is None:
             response, code = create_response(
-                status.HTTP_200_OK, 'Genders', genderSerializers.data)
-            return Response(response, status=code)
-        response, code = create_response(
-            status.HTTP_400_BAD_REQUEST, 'Error', genderSerializers.errors)
-        return Response(response, status=code)
-
-
-class GenderUpdateView(UpdateAPIView):
-    queryset = Genders.objects.all()
-    serializer_class = GenderSerializers
-
-    def get_object(self):
-        try:
-            pk = self.kwargs.get('pk')
-            return Genders.objects.get(pk=pk)
-        except Genders.DoesNotExist:
-            return None
-
-    def put(self, request, *args, **kwargs):
-        gender = self.get_object()
-
-        if gender is None:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Not Found', 'Gender Not Found')
+                status.HTTP_400_BAD_REQUEST, 'Error', 'Gender Not Found')
             return Response(response, status=code)
 
-        try:
-            genderSerializers = GenderSerializers(gender, data=request.data)
-            if genderSerializers.is_valid():
-                genderSerializers.update(
-                    gender, genderSerializers.validated_data)
-                response, code = create_response(
-                    status.HTTP_200_OK, 'Gender Update', genderSerializers.data)
-                return Response(response, status=code)
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', genderSerializers.errors)
-            return Response(response, status=code)
-        except (AttributeError, Exception) as e:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Not Found', e.args)
-            return Response(response, status=code)
-
-class GendersDestroyView(DestroyAPIView):
-    queryset = Genders.objects.all()
-    serializer_class = GenderSerializers
-    #permission_classes = [IsAdminRole]
-
-    def get_object(self):
-        try:
-            pk = self.kwargs.get('pk')
-            return Genders.objects.get(id=pk)
-        except Genders.DoesNotExist:
-            return None
-
-    def delete(self, request, *args, **kwargs):
-        gender = self.get_object()
-        if gender is None:
-            response, code = create_response(
-                status.HTTP_200_OK, 'Error', 'Gender Not Exist')
-            return Response(response, status=code)
-        gender.delete()
+        # Cambia el estado booleano en lugar de eliminar el objeto
+        instance.status = False
+        instance.save()
 
         response, code = create_response(
-            status.HTTP_200_OK, 'Error', 'Ok')
+            status.HTTP_200_OK, 'Status Updated', 'Status set to False')
         return Response(response, status=code)

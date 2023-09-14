@@ -1,9 +1,7 @@
 from .....mudules import path
-from .gender import GenderCreateView, GenderListView, GenderUpdateView, GendersDestroyView
+from .gender import GenderDetail, GenderList
 
 urlpatterns = [
-    path('', GenderListView.as_view()),
-    path('update/<int:pk>', GenderUpdateView.as_view()),
-    path('create/', GenderCreateView.as_view()),
-    path('delete/<int:pk>', GendersDestroyView.as_view()),
+    path('', GenderList.as_view()),
+    path('<int:pk>', GenderDetail.as_view()),
 ]

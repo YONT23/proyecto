@@ -1,90 +1,39 @@
-from .....mudules import (ListAPIView, CreateAPIView, Response, status, UpdateAPIView, 
-                          create_response, IsAdminRole, DestroyAPIView)
-from apps.authenticacion.models import Document_types
+from .....mudules import (Response, status, create_response)
+from apps.authenticacion.models import Document_type
 from ....serializer.serializers import DocumentSerializers
+from rest_framework import generics
 
-class DocumentListView(ListAPIView):
-    queryset = Document_types.objects.all()
+class DocumentList(generics.ListCreateAPIView):
+    queryset = Document_type.objects.filter(status=True)
     serializer_class = DocumentSerializers
 
-    def get(self, request, *args, **kwargs):
-        data = self.get_queryset()
-        serializers = DocumentSerializers(data, many=True)
+class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Document_type.objects.all()
+    serializer_class = DocumentSerializers
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            response, code = create_response(
+                status.HTTP_200_OK, 'Document Update', serializer.data)
+            return Response(response, status=code)
         response, code = create_response(
-            status.HTTP_200_OK, 'Document', serializers.data)
+            status.HTTP_400_BAD_REQUEST, 'Error', serializer.errors)
         return Response(response, status=code)
 
-class DocumentCreateView(CreateAPIView):
-    queryset = Document_types.objects.all()
-    serializer_class = DocumentSerializers
-
-    def post(self, request, *args, **kwargs):
-        documentSerializers = DocumentSerializers(data=request.data)
-        if documentSerializers.is_valid():
-            documentSerializers.save()
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance is None:
             response, code = create_response(
-                status.HTTP_200_OK, 'Document', documentSerializers.data)
-            return Response(response, status=code)
-        response, code = create_response(
-            status.HTTP_400_BAD_REQUEST, 'Error', documentSerializers.errors)
-        return Response(response, status=code)
-
-class DocumentUpdateView(UpdateAPIView):
-    queryset = Document_types.objects.all()
-    serializer_class = DocumentSerializers
-
-    def get_object(self):
-
-        try:
-            pk = self.kwargs.get('pk')
-            return Document_types.objects.get(pk=pk)
-        except Document_types.DoesNotExist:
-            return None
-
-    def put(self, request, *args, **kwargs):
-        document = self.get_object()
-
-        if document is None:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', documentSerializers.errors)
+                status.HTTP_400_BAD_REQUEST, 'Error', 'Type document Not Exist')
             return Response(response, status=code)
 
-        try:
-            documentSerializers = DocumentSerializers(
-                document, data=request.data)
-            if documentSerializers.is_valid():
-                documentSerializers.save()
-                response, code = create_response(
-                    status.HTTP_200_OK, 'Document Update', documentSerializers.data)
-                return Response(response, status=code)
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Error', documentSerializers.errors)
-            return Response(response, status=code)
-        except (AttributeError, Exception) as e:
-            response, code = create_response(
-                status.HTTP_400_BAD_REQUEST, 'Not Found', e.args)
-            return Response(response, status=code)
-
-class DocumentDestroyView(DestroyAPIView):
-    queryset = Document_types.objects.all()
-    serializer_class = DocumentSerializers
-    #permission_classes = [IsAdminRole]
-
-    def get_object(self):
-        try:
-            pk = self.kwargs.get('pk')
-            return Document_types.objects.get(id=pk)
-        except Document_types.DoesNotExist:
-            return None
-
-    def delete(self, request, *args, **kwargs):
-        document = self.get_object()
-        if document is None:
-            response, code = create_response(
-                status.HTTP_200_OK, 'Error', 'Type document Not Exist')
-            return Response(response, status=code)
-        document.delete()
+        # Cambia el estado booleano en lugar de eliminar el objeto
+        instance.status = False
+        instance.save()
 
         response, code = create_response(
-            status.HTTP_200_OK, 'Error', 'Ok')
+            status.HTTP_200_OK, 'Status Updated', 'Status set to False')
         return Response(response, status=code)

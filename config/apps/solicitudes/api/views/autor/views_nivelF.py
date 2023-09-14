@@ -1,53 +1,40 @@
 from django.http import Http404
 
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 
 from ....models import NivelFormacion
 from ...serializers.autor.autor_Serializers import NivelFormacionSerializer
 
-class NivelFormacionList(APIView):
-    def get(self, request):
-        niveles_formacion = NivelFormacion.objects.all()
-        serializer = NivelFormacionSerializer(niveles_formacion, many=True)
-        data = {'niveles_formacion': serializer.data}
-        return Response(data)
+class NivelFormacionList(generics.ListCreateAPIView):
+    serializer_class = NivelFormacionSerializer
 
-    def post(self, request):
-        serializer = NivelFormacionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        return NivelFormacion.objects.filter(status=True)  # Filtrar por status=True
 
+    def perform_create(self, serializer):
+        serializer.save()
 
-class NivelFormacionDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return NivelFormacion.objects.get(pk=pk)
-        except NivelFormacion.DoesNotExist:
-            raise Http404
+class NivelFormacionDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = NivelFormacionSerializer
 
-    def get(self, request, pk):
-        nivel_formacion = self.get_object(pk)
-        serializer = NivelFormacionSerializer(nivel_formacion)
-        data = {'nivel_formacion': serializer.data}
-        return Response(data)
+    def get_queryset(self):
+        return NivelFormacion.objects.filter(status=True)  # Filtrar por status=True
 
-    def put(self, request, pk):
-        nivel_formacion = self.get_object(pk)
-        serializer = NivelFormacionSerializer(nivel_formacion, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_destroy(self, instance):
+        # Cambiar el estado booleano en lugar de eliminar el objeto
+        instance.status = False
+        instance.save()
 
-    def delete(self, request, pk):
-        nivel = self.get_object(pk)
-        if nivel is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        nivel.status = False  
-        nivel.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance is None:
+            return Response({'detail': 'Nivel de formación no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Verificar si el estado es True antes de cambiarlo o eliminarlo
+        if instance.status:
+            self.perform_destroy(instance)
+            return Response({'detail': 'Nivel de formación ocultado exitosamente'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'detail': 'El nivel de formación ya está oculto'}, status=status.HTTP_400_BAD_REQUEST)

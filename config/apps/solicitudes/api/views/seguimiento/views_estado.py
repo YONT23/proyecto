@@ -1,48 +1,35 @@
 from django.http import Http404
-from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from ....models import EstadoSeguimiento
 from ...serializers.seguimiento.seguimiento_serializers import EstadoSeguimientoSerializer
 
-class EstadoSeguimientoList(APIView):
-    def get(self, request):
-        estados_seguimiento = EstadoSeguimiento.objects.filter(status=True)  # Filtrar por status=True
-        serializer = EstadoSeguimientoSerializer(estados_seguimiento, many=True)
-        return Response(serializer.data)
+class EstadoSeguimientoList(generics.ListCreateAPIView):
+    queryset = EstadoSeguimiento.objects.filter(status=True)  # Filtrar por status=True
+    serializer_class = EstadoSeguimientoSerializer
 
-    def post(self, request):
-        serializer = EstadoSeguimientoSerializer(data=request.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class EstadoSeguimientoDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return EstadoSeguimiento.objects.get(pk=pk)
-        except EstadoSeguimiento.DoesNotExist:
-            raise Http404
+class EstadoSeguimientoDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EstadoSeguimiento.objects.all()
+    serializer_class = EstadoSeguimientoSerializer
 
-    def get(self, request, pk):
-        estado_seguimiento = self.get_object(pk)
-        if estado_seguimiento.status:
-            serializer = EstadoSeguimientoSerializer(estado_seguimiento)
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.status:
+            serializer = self.get_serializer(instance)
             return Response(serializer.data)
         else:
-            return Response('No encontrado... Realice otra busquedad.',status=status.HTTP_404_NOT_FOUND)
+            return Response('No encontrado... Realice otra búsqueda.', status=status.HTTP_404_NOT_FOUND)
 
-    def put(self, request, pk):
-        estado_seguimiento = self.get_object(pk)
-        serializer = EstadoSeguimientoSerializer(estado_seguimiento, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, pk):
-        estado_seguimiento = self.get_object(pk)
-        estado_seguimiento.status = False 
-        estado_seguimiento.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def perform_destroy(self, instance):
+        # Cambiar el estado booleano en lugar de eliminar el objeto
+        instance.status = False
+        instance.save()

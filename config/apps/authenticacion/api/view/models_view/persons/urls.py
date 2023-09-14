@@ -1,9 +1,7 @@
 from .....mudules import path
-from .persons import PersonCreateView, PersonView, PersonUpdateView, PersonDeleteView
+from .persons import PersonList, PersonDetail
 
 urlpatterns = [
-    path('', PersonView.as_view()),
-    path('update/<int:pk>/', PersonUpdateView.as_view(), name='update-person'),
-    path('create/', PersonCreateView.as_view()),
-    path('delete/<int:pk>/', PersonDeleteView.as_view(), name='person-delete')
+    path('', PersonList.as_view()),
+    path('<int:pk>/', PersonDetail.as_view(), name='update-person'),
 ]

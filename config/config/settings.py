@@ -148,7 +148,7 @@ PASSWORD_HASHERS = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'backend',
+        'NAME': 'back_revista',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',

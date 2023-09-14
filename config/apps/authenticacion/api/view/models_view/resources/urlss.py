@@ -1,7 +1,7 @@
 from django.urls import path
-from .resources import ResourcesRolesListView, ResourcesRolesDetailView
+from .resources import ResourceRolList, ResourceRolDetail
 
 urlpatterns = [
-   path('', ResourcesRolesListView.as_view(), name='resourcesr-list-create'),
-   path('resourcesr/<int:pk>/', ResourcesRolesDetailView.as_view(), name='resourcesr-update-delete'),
+   path('', ResourceRolList.as_view(), name='resourcesr-list-create'),
+   path('<int:pk>/', ResourceRolDetail.as_view(), name='resourcesr-update-delete'),
 ]

@@ -1,13 +1,13 @@
 from rest_framework.generics import CreateAPIView
 from ....serializer.serializers import ResourcesRolesSerializers, RolesUserSerializers, RolesSerializers
 from rest_framework import status
-from apps.authenticacion.models import Resources, User_roles, Roles
+from apps.authenticacion.models import Resource, User_rol, Rol
 from rest_framework.response import Response
 from .....mudules import create_response
 
 
 class SecurityResourcesCreate(CreateAPIView):
-    queryset = Resources.objects.all()
+    queryset = Resource.objects.all()
     serializer_class = ResourcesRolesSerializers
 
     def post(self, request, *args, **kwargs):
@@ -24,13 +24,13 @@ class SecurityResourcesCreate(CreateAPIView):
             return Response(response, status=code)
 
 class SecurityRolesUser(CreateAPIView):
-    queryset = User_roles.objects.all()
+    queryset = User_rol.objects.all()
     serializer_class = RolesUserSerializers
 
     def post(self, request, *args, **kwargs):
         user = request.data['user']
         rolesId = request.data['roles']
-        roles = Roles.objects.filter(id__in=rolesId)
+        roles = Rol.objects.filter(id__in=rolesId)
 
         rolesUser = RolesUserSerializers(
             data={'userId': user})
