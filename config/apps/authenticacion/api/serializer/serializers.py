@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer, CharField, ValidationErr
 from django.utils import timezone
 from ...mudules import create_response, menuResources
 
+
 class UserSerializersSimple(ModelSerializer):
     class Meta:
         model = CustomUser
@@ -86,6 +87,7 @@ class Resources_RolesSerializers(serializers.ModelSerializer):
             raise e
 
 #ROLES
+
 class RolesSerializers(ModelSerializer):
     userId = UserSerialSimple(read_only=True)
     
@@ -122,6 +124,14 @@ class RolesUserSerializers(serializers.ModelSerializer):
                 404, '', 'Duplicate Key User - Rol')
             raise ValidationError(response, code=code)
   
+class UserRolSerializer(serializers.ModelSerializer):
+    userId = UserSerialSimple()
+    rolesId = RolesSerializers()
+
+    class Meta:
+        model = User_rol
+        fields = '__all__'
+        
 class UserRolesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_rol

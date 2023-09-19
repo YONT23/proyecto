@@ -102,7 +102,7 @@ class NivelFormacion(models.Model):
        
 class UsuarioXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
-    fecha_grado = models.DateField()
+    fecha_grado = models.DateField(null=True, blank=True)
     resol_conv = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     cert_grado = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     nombre_institucion = models.CharField(max_length=256)

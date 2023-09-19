@@ -2,9 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import UserManager
 
-def path_to_avatar(instance, filename):              
-    return f'avatars/{instance.id}/{filename}' 
-
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=45, null=False)
     email = models.EmailField(
@@ -21,6 +18,9 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     
+def path_to_avatar(instance, filename):              
+    return f'avatars/{instance.id}/{filename}' 
+
 class BaseModel(models.Model):
     createdAt = models.DateField(auto_now_add=True)
     updateAt = models.DateField(auto_now=True, blank=True, null=True)
