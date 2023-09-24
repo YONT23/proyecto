@@ -15,6 +15,8 @@ from ...serializers.seguimiento.seguimiento_serializers import SeguimientoSerial
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
+from apps.authenticacion.models import CustomUser
+
 class SeguimientoList(generics.ListCreateAPIView):
     queryset = Seguimiento.objects.filter(status=True)  
     serializer_class = SeguimientoSerializer
@@ -69,13 +71,13 @@ def descargar_archivo(request, pk):
 @receiver(post_save, sender=Seguimiento)
 def enviar_correo_cuando_actualiza(sender, instance, **kwargs):
     if instance.cambio_relevante:
+        autores_data = CustomUser.objects.values('id', 'email')
         subject = 'Seguimiento de su solicitud generada'
         message = 'Tu seguimiento de su solicitud ha sido generada exitosamente'
         from_email = 'mendozaym01@gmail.com'
-        recipient_list = [instance.solicitudId.autor.email, instance.responsableId.email]
-
+        
+        recipient_list = [autor['email'] for autor in autores_data] + [instance.responsableId.email]
         send_mail(subject, message, from_email, recipient_list)
 
-        # Establecer cambio_relevante en False después de enviar el correo
         instance.cambio_relevante = False
         instance.save()

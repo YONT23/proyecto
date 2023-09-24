@@ -2,7 +2,7 @@ from rest_framework import serializers
 from ....models import *
 
 from django import forms
-
+from apps.authenticacion.api.serializer.authserializer import CustomUserSerializer
 from .....authenticacion.models import CustomUser
     
 class SolicitudSerializer(serializers.ModelSerializer):
@@ -14,6 +14,9 @@ class SolicitudSerializer(serializers.ModelSerializer):
         model = Solicitud
         fields = '__all__'
         verbose_name = 'Solicitud'
+        extra_kwargs = {
+            'autores': {'required': True}
+        }
         
 class PasosSeguimientoSerializer(serializers.ModelSerializer):
     class Meta:

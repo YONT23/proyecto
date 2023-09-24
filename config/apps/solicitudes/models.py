@@ -22,8 +22,7 @@ class ContenidoSolicitud(models.Model):
        
 class Solicitud(models.Model):
     titulo_articulo = models.CharField(max_length=200) 
-    autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    #autores = models.CharField(max_length=500)  
+    autores = models.ManyToManyField(CustomUser)
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
