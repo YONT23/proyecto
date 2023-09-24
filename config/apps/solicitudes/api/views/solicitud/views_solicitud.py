@@ -6,7 +6,10 @@ from rest_framework.response import Response
 
 from ....models import Solicitud
 from ...serializers.solicitud.solicitud_serializers import SolicitudSerializer
-
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from rest_framework.response import Response
 
 class SolicitudList(generics.ListCreateAPIView):
@@ -38,4 +41,14 @@ class SolicitudDetail(generics.RetrieveUpdateDestroyAPIView):
         # Cambiar el estado booleano en lugar de eliminar el objeto
         instance.status = False
         instance.save()
+    
+@receiver(post_save, sender=Solicitud)
+def enviar_correo_cuando_se_crea_solicitud(sender, instance, created, **kwargs):
+    if created:
+        subject = 'Nueva solicitud de revisión de artículo'
+        message = 'Se ha creado una nueva solicitud de revisión de artículo.'
+        from_email = 'mendozaym01@gmail.com'
+        # A continuación, agrega las direcciones de correo electrónico de los destinatarios, por ejemplo, los editores jefe
+        recipient_list = ['lordym00@gmail.com', instance.autor.email]
 
+        send_mail(subject, message, from_email, recipient_list)

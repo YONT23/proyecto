@@ -109,15 +109,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 ##  ENVIAR EMAILS ##
-
-#SITE_ID = 1
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_PORT = 587  
-#EMAIL_USE_TLS = True
-#EMAIL_HOST_USER = 'mendozaym01@gmail.com'
-#EMAIL_HOST_PASSWORD = '12345678'
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mendozaym01@gmail.com'
+EMAIL_HOST_PASSWORD = 'hekr qohr rvyr homi'
 
 TEMPLATES = [
     {

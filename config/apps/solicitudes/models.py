@@ -22,7 +22,8 @@ class ContenidoSolicitud(models.Model):
        
 class Solicitud(models.Model):
     titulo_articulo = models.CharField(max_length=200) 
-    autores = models.CharField(max_length=500)  
+    autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    #autores = models.CharField(max_length=500)  
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
@@ -66,6 +67,7 @@ class Seguimiento(models.Model):
     responsableId = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='responsable', null=True, blank=True)
     correciones = models.FileField(upload_to='archivos/archivos_seguimiento/', null=True, blank=True)
     status = models.BooleanField(default=True)
+    cambio_relevante = models.BooleanField(default=False)
     
     def _str_(self):
         return str(self.solicitudId)

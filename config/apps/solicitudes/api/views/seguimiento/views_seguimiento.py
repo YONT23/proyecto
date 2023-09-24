@@ -1,5 +1,8 @@
 from django.http import Http404
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
@@ -9,9 +12,11 @@ from django.http import FileResponse
 
 from ....models import Seguimiento
 from ...serializers.seguimiento.seguimiento_serializers import SeguimientoSerializer
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
 
 class SeguimientoList(generics.ListCreateAPIView):
-    queryset = Seguimiento.objects.filter(status=True)  # Filtrar por status=True
+    queryset = Seguimiento.objects.filter(status=True)  
     serializer_class = SeguimientoSerializer
 
     def create(self, request, *args, **kwargs):
@@ -35,8 +40,20 @@ class SeguimientoDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             return Response('No encontrado... Realice otra búsqueda.', status=status.HTTP_404_NOT_FOUND)
 
+    def perform_update(self, serializer):
+        instance = self.get_object()
+
+        if (
+            self.request.data.get('fecha_asignacion') or
+            self.request.data.get('fecha_evaluacion') or
+            self.request.data.get('estado_seguimiento')
+        ):
+            # Si se están actualizando campos relevantes, establece cambio_relevante en True
+            instance.cambio_relevante = True
+
+        serializer.save()  # Guarda la instancia actualizada
+
     def perform_destroy(self, instance):
-        # Cambiar el estado booleano en lugar de eliminar el objeto
         instance.status = False
         instance.save()
 
@@ -49,7 +66,16 @@ def descargar_archivo(request, pk):
     else:
         raise Http404("Archivo no encontrado")
 
+@receiver(post_save, sender=Seguimiento)
+def enviar_correo_cuando_actualiza(sender, instance, **kwargs):
+    if instance.cambio_relevante:
+        subject = 'Seguimiento de su solicitud generada'
+        message = 'Tu seguimiento de su solicitud ha sido generada exitosamente'
+        from_email = 'mendozaym01@gmail.com'
+        recipient_list = [instance.solicitudId.autor.email, instance.responsableId.email]
 
+        send_mail(subject, message, from_email, recipient_list)
 
-
-
+        # Establecer cambio_relevante en False después de enviar el correo
+        instance.cambio_relevante = False
+        instance.save()
