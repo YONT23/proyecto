@@ -2,8 +2,6 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(UsuarioXFormacion)
-admin.site.register(RolAutor)
-admin.site.register(AutorXSolicitud)
 admin.site.register(Solicitud)
 admin.site.register(Seguimiento)
 admin.site.register(Anexos)

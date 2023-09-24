@@ -26,14 +26,7 @@ class AutorSerial(serializers.ModelSerializer):
         model = CustomUser
         fields = '__all__'
 
-class RolAutorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RolAutor
-        fields = '__all__'
+
         
-class AutorXSolicitudSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = AutorXSolicitud
-        fields = ['id', 'usuario', 'rolautor', 'solicitud']      
+   
 

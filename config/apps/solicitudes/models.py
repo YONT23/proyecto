@@ -77,22 +77,6 @@ class Anexos(models.Model):
     
     def __str__(self):
         return str(self.solicitudId)
-    
-class RolAutor(models.Model):
-    nombre = models.CharField(max_length=200)
-    status = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return str(self.nombre)
-    
-class AutorXSolicitud(models.Model):
-    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    rolautor = models.ForeignKey(RolAutor, on_delete=models.CASCADE)
-    solicitud = models.ForeignKey(Solicitud, on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return f"{self.usuario.username} - {self.rolautor.nombre} - {self.solicitud.urls}"
         
 class NivelFormacion(models.Model):
     nombre = models.CharField(max_length=256)
