@@ -26,7 +26,6 @@ class Solicitud(models.Model):
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
     urls = models.CharField(max_length=256)
-    orcid = models.CharField(max_length=256)
     afiliacion = models.CharField(max_length=256)
     status = models.BooleanField(default=True)
     
@@ -61,10 +60,11 @@ class Seguimiento(models.Model):
     fecha_asignacion = models.DateField(null=True, blank=True)
     fecha_programacion = models.DateField(null=True, blank=True)
     fecha_evaluacion = models.DateField(null=True, blank=True)
-    pasos_seguimiento = models.ForeignKey(PasosSeguimiento,on_delete=models.CASCADE, related_name='pasos_seguimiento')
+    pasos_seguimiento = models.ForeignKey(PasosSeguimiento,on_delete=models.CASCADE, related_name='pasos_seguimiento', blank=True, null=True)
     estado_seguimiento = models.ForeignKey(EstadoSeguimiento, on_delete=models.CASCADE, related_name='estado_seguimiento', null=True, blank=True)
     responsableId = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='responsable', null=True, blank=True)
     correciones = models.FileField(upload_to='archivos/archivos_seguimiento/', null=True, blank=True)
+    formato_evaluacion = models.FileField(upload_to='archivos/archivos_seguimiento/', null=True, blank=True)
     status = models.BooleanField(default=True)
     cambio_relevante = models.BooleanField(default=False)
     
@@ -88,10 +88,8 @@ class NivelFormacion(models.Model):
 class UsuarioXFormacion(models.Model):
     nombre = models.CharField(max_length=256)
     fecha_grado = models.DateField(null=True, blank=True)
-    resol_conv = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     cert_grado = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     nombre_institucion = models.CharField(max_length=256)
-    cert_resol = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
     nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
     autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     status = models.BooleanField(default=True)

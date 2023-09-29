@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
-    #Middleware agregado
+    #Middleware 
     #'apps.middlewares.middleware.ServiceMiddleware',
     
     'django.middleware.common.CommonMiddleware',
