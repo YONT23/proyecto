@@ -102,7 +102,7 @@ class UserRol(BaseModel):
         Rol, on_delete=models.CASCADE, related_name='rols')
 
     def __str__(self):
-        return f"{self.user.username} - {self.role.name}"
+        return f"{self.userId.username} - {self.rolesId.name}"
 
     class Meta:
         unique_together = (('userId', 'rolesId'))

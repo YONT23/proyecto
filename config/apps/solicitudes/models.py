@@ -29,7 +29,7 @@ class Solicitud(models.Model):
     status = models.BooleanField(default=True)
     
     def __str__(self):
-        return self.urls
+        return self.titulo_articulo
 
     class Meta:
         verbose_name = 'Solicitud' 

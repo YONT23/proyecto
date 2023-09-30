@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from apps.authenticacion.models import CustomUser, UserRol
+from apps.authenticacion.models import CustomUser, UserRol, Rol
 
 class SeguimientoList(generics.ListCreateAPIView):
     queryset = Seguimiento.objects.filter(status=True)  
@@ -146,21 +146,23 @@ def enviar_correo_evaluacion(sender, instance, raw, **kwargs):
                 
                 send_mail(subject, message, from_email, recipient_list)
 
-def obtener_correo_por_rol(rol_nombre):
-    user_rols_con_rol = UserRol.objects.filter(rolesId__name=rol_nombre)
-    correos = [user_rol.userId.email for user_rol in user_rols_con_rol]
-    print('estos son los correos', correos)
-    return correos
-
 @receiver(post_save, sender=Seguimiento)
 def notificar_editor_jefe(sender, instance, created, **kwargs):
 
     if instance.pasos_seguimiento.nombre in ["Revisión de evaluador 1", "Revisión de evaluador 2"]:
-        if instance.estado_seguimiento in ["Aceptado sin cambios","Aceptado con cambios menores"]:
-            correos_editores_jefe = obtener_correo_por_rol("Editor jefe")
+        if instance.estado_seguimiento.nombre in ["Aceptado sin cambios", "Aceptado con cambios menores"]:
+            editor_jefe = Rol.objects.get(name='Editor Jefe')      
+            usuarios_editor_jefe = editor_jefe.users.filter(is_active=True)
             from_email = 'mendozaym01@gmail.com'
-            subject = 'Artículo aceptado por los evaluadores'
+            subject = 'Artículo aceptado'
             message = f'El seguimiento del artículo "{instance.solicitudId.titulo_articulo}" ha sido aceptado por los evaluadores.'
-            recipient_list = correos_editores_jefe
+            recipient_list = usuarios_editor_jefe
             send_mail(subject, message, from_email, recipient_list)
+
+    
+
+
+
+
+
          
