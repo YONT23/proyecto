@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from apps.authenticacion.models import Resource, Rol, Resource_rol
+from apps.authenticacion.models import Resource, Rol, ResourceRol
 from ....serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
 
 class ResourceList(generics.ListCreateAPIView):
@@ -37,11 +37,11 @@ class ResourceDetail(generics.RetrieveUpdateDestroyAPIView):
 ########### RECURSOS ROLES ############
 
 class ResourceRolList(generics.ListCreateAPIView):
-    queryset = Resource_rol.objects.filter(status=True)
+    queryset = ResourceRol.objects.filter(status=True)
     serializer_class = ResourcesRolesSerializers
 
 class ResourceRolDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Resource_rol.objects.all()
+    queryset = ResourceRol.objects.all()
     serializer_class = ResourcesRolesSerializers
 
     def perform_destroy(self, instance):

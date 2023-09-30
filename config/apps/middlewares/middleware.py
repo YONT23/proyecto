@@ -1,5 +1,5 @@
 from django.http import HttpResponseForbidden
-from apps.authenticacion.models import CustomUser, Rol, Resource, User_rol, Resource_rol
+from apps.authenticacion.models import CustomUser, Rol, Resource, UserRol, ResourceRol
 from django.core.exceptions import ObjectDoesNotExist  
 
 class ServiceMiddleware:
@@ -8,10 +8,11 @@ class ServiceMiddleware:
 
     def __call__(self, request):
         url = request.path_info
+        print(url)
         if request.user and not request.user.is_anonymous:
-            idUsuario = CustomUser.objects.get(username = request.user)
+            idUsuario = CustomUser.objects.get(email = request.user)
             print(idUsuario.id)
-            rolUsuario = User_rol.objects.filter(userId = idUsuario.id).values('rolesId')
+            rolUsuario = UserRol.objects.filter(userId = idUsuario.id).values('rolesId')
             print(rolUsuario)
             
             role_recursos = Resource.objects.all().prefetch_related('roles').values('path','titulo','roles').filter(roles__in= (rolUsuario))

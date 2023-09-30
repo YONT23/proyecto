@@ -24,7 +24,6 @@ class RegistroSerializzer(serializers.Serializer):
         )
         return user
 
-
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.SlugField(
         max_length=100,

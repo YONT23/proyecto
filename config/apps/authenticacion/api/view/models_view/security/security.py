@@ -1,7 +1,7 @@
 from rest_framework.generics import CreateAPIView
 from ....serializer.serializers import ResourcesRolesSerializers, RolesUserSerializers, RolesSerializers
 from rest_framework import status
-from apps.authenticacion.models import Resource, User_rol, Rol
+from apps.authenticacion.models import Resource, UserRol, Rol
 from rest_framework.response import Response
 from .....mudules import create_response
 
@@ -24,7 +24,7 @@ class SecurityResourcesCreate(CreateAPIView):
             return Response(response, status=code)
 
 class SecurityRolesUser(CreateAPIView):
-    queryset = User_rol.objects.all()
+    queryset = UserRol.objects.all()
     serializer_class = RolesUserSerializers
 
     def post(self, request, *args, **kwargs):

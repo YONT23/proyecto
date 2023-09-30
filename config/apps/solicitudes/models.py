@@ -25,7 +25,6 @@ class Solicitud(models.Model):
     autores = models.ManyToManyField(CustomUser)
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
     fecha = models.DateField()
-    urls = models.CharField(max_length=256)
     afiliacion = models.CharField(max_length=256)
     status = models.BooleanField(default=True)
     

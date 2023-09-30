@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from apps.authenticacion.models import (Document_type, Gender, Person, Resource, Rol, CustomUser, 
-                       User_rol, Resource_rol)
+from apps.authenticacion.models import (DocumentType, Gender, Person, Resource, Rol, CustomUser, 
+                       UserRol, ResourceRol)
 from django import forms
 
 from rest_framework.serializers import ModelSerializer, CharField, ValidationError, Serializer, IntegerField
@@ -28,7 +28,7 @@ class GenderSerializers(ModelSerializer):
 #DOCUMENT
 class DocumentSerializers(ModelSerializer):
     class Meta:
-        model = Document_type
+        model = DocumentType
         fields = '__all__'   
                  
 #PERSON
@@ -54,12 +54,12 @@ class ResourcesSerializers(ModelSerializer):
         
 class ResourcesRolesSerializers(serializers.ModelSerializer):
     class Meta:
-        model = Resource_rol
+        model = ResourceRol
         fields = '__all__'     
 
 class Resources_RolesSerializers(serializers.ModelSerializer):
     class Meta:
-        model = Resource_rol
+        model = ResourceRol
         fields = '__all__'
         
     rolesId = IntegerField()
@@ -79,9 +79,9 @@ class Resources_RolesSerializers(serializers.ModelSerializer):
                           resources, Resource, id_last_resources)
             resources = Resource.objects.bulk_create(resources)
             roles = Rol.objects.get(pk=validated_data['rolesId'])
-            list_resources_roles = [Resource_rol(
+            list_resources_roles = [ResourceRol(
                 rolesId=roles, resourcesId=r) for r in resources]
-            Resource_rol.objects.bulk_create(list_resources_roles)
+            ResourceRol.objects.bulk_create(list_resources_roles)
             return None
         except Exception as e:
             raise e
@@ -99,7 +99,7 @@ class RolesSimpleSerializers(ModelSerializer):
     resources = ResourcesSerializers(many=True)
 
     class Meta:
-        model = User_rol
+        model = UserRol
         fields = '__all__'
 
 class RolesUserSerializers(serializers.ModelSerializer):
@@ -107,17 +107,17 @@ class RolesUserSerializers(serializers.ModelSerializer):
     rolesId = RolesSerializers(read_only=True)
 
     class Meta:
-        model = User_rol
+        model = UserRol
         fields = ['id', 'status', 'userId', 'rolesId']
         read_only_fields = ['userId', 'rolesId']
 
     def create(self, validated_data):
         user = validated_data['userId']
-        rolesForUser = [User_rol(
+        rolesForUser = [UserRol(
             userId=user, rolesId=x) for x in validated_data['roles']]
 
         try:
-            response = User_rol.objects.bulk_create(rolesForUser)
+            response = UserRol.objects.bulk_create(rolesForUser)
             return response[0]
         except Exception as e:
             response, code = create_response(
@@ -129,12 +129,12 @@ class UserRolSerializer(serializers.ModelSerializer):
     rolesId = RolesSerializers()
 
     class Meta:
-        model = User_rol
+        model = UserRol
         fields = '__all__'
         
 class UserRolesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_rol
+        model = UserRol
         fields = '__all__'
   
 class UserSerial(ModelSerializer):

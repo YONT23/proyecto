@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from apps.authenticacion.models import CustomUser, User_rol
+from apps.authenticacion.models import CustomUser, UserRol
 
 class SeguimientoList(generics.ListCreateAPIView):
     queryset = Seguimiento.objects.filter(status=True)  
@@ -147,7 +147,7 @@ def enviar_correo_evaluacion(sender, instance, raw, **kwargs):
                 send_mail(subject, message, from_email, recipient_list)
 
 def obtener_correo_por_rol(rol_nombre):
-    user_rols_con_rol = User_rol.objects.filter(rolesId__name=rol_nombre)
+    user_rols_con_rol = UserRol.objects.filter(rolesId__name=rol_nombre)
     correos = [user_rol.userId.email for user_rol in user_rols_con_rol]
     print('estos son los correos', correos)
     return correos

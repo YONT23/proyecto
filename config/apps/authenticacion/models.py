@@ -5,21 +5,20 @@ from django.contrib.auth.models import UserManager
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=45, null=False)
     email = models.EmailField(
-        ("email address"), blank=False, null=False, unique=True)
+        "email address", blank=False, null=False, unique=True)
     password = models.CharField(max_length=100)
     resetToken = models.CharField(max_length=256, blank=True, null=True)
     avatar = models.ImageField(upload_to='archivos/archivos_useravatar/', blank=True, null=True)
     roles = models.ManyToManyField(
-        'Rol', through='User_rol', related_name='users_customuser'
+        'Rol', through='UserRol', related_name='users_customuser'
     )
-
     objects = UserManager()
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     
 def path_to_avatar(instance, filename):              
-    return f'avatars/{instance.id}/{filename}' 
+    return f'avatars/{instance.id}/{filename}'
 
 class BaseModel(models.Model):
     createdAt = models.DateField(auto_now_add=True)
@@ -28,7 +27,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
     
-class Document_type(BaseModel):
+class DocumentType(BaseModel):
     name = models.CharField(max_length=100)
     status = models.BooleanField(default=True)
 
@@ -36,8 +35,8 @@ class Document_type(BaseModel):
         return self.name
 
     class Meta:
-        verbose_name = 'Document_types'
-        verbose_name_plural = "Document_types"
+        verbose_name = 'Document Type'
+        verbose_name_plural = 'Document Types'
         
 class Gender(BaseModel):
     name = models.CharField(max_length=100)
@@ -54,10 +53,10 @@ class Rol(BaseModel):
     name = models.CharField(max_length=200, unique=True)
     status = models.BooleanField(default=True)
     users = models.ManyToManyField(
-        CustomUser, through='User_rol', related_name='roles_rol'
+        CustomUser, through='UserRol', related_name='roles_rol'
     )
     resources = models.ManyToManyField(
-        'Resource', through='Resource_rol', related_name='roles_resource'
+        'Resource', through='ResourceRol', related_name='roles_resource'
     )
 
     def __str__(self) -> str:
@@ -76,11 +75,12 @@ class Person(BaseModel):
     nationality = models.CharField(max_length=30, blank=True, null=True)
     ciudad = models.CharField(max_length=30, blank=True, null=True)
     orcid = models.CharField(max_length=256, blank=True, null=True)
+    url_orcid = models.CharField(max_length=256, blank=True, null=True)
     date_of_birth = models.DateField(verbose_name='Fecha de nacimiento')
     phone = models.CharField(max_length=20, blank=True, null=True)
     status = models.BooleanField(default=True)
     document_type = models.ForeignKey(
-        Document_type, related_name='document_types', on_delete=models.SET_NULL, blank=True, null=True)
+        DocumentType, related_name='document_types', on_delete=models.SET_NULL, blank=True, null=True)
     gender_type = models.ForeignKey(
         Gender, related_name='gender_types', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(CustomUser, related_name='user',
@@ -94,7 +94,7 @@ class Person(BaseModel):
         verbose_name = 'Persons'
         verbose_name_plural = 'Persons'
 
-class User_rol(BaseModel):
+class UserRol(BaseModel):
     status = models.BooleanField(default=True)
     userId = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='users')
@@ -102,7 +102,7 @@ class User_rol(BaseModel):
         Rol, on_delete=models.CASCADE, related_name='rols')
 
     def __str__(self):
-        return f"{self.userId.username} - {self.rolesId.name}"
+        return f"{self.user.username} - {self.role.name}"
 
     class Meta:
         unique_together = (('userId', 'rolesId'))
@@ -117,7 +117,7 @@ class Resource(BaseModel):
     link = models.CharField(max_length=256)
     titulo = models.CharField(max_length=100)
     roles = models.ManyToManyField(
-        Rol, through='Resource_rol', related_name='resources_rol'
+        Rol, through='ResourceRol', related_name='resources_rol'
     )
     status = models.BooleanField(default=True)
     
@@ -128,17 +128,18 @@ class Resource(BaseModel):
         verbose_name = 'Resources'
         verbose_name_plural = 'Resources'
 
-class Resource_rol(BaseModel):
-    resourcesId = models.ForeignKey(
+class ResourceRol(BaseModel):
+    resource = models.ForeignKey(
         Resource, on_delete=models.CASCADE, related_name='resources')
-    rolesId = models.ForeignKey(
+    role = models.ForeignKey(
         Rol, on_delete=models.CASCADE, related_name='resources_rols')
     status = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-        return self.resourcesId.path + '' + self.rolesId.name
+        return self.resource.path + ' - ' + self.role.name
 
     class Meta:
         verbose_name = 'Resources_rols'
         verbose_name_plural = 'resources_rols'
+
 

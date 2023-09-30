@@ -1,14 +1,14 @@
 from .....mudules import (Response, status, create_response)
-from apps.authenticacion.models import Document_type
+from apps.authenticacion.models import DocumentType
 from ....serializer.serializers import DocumentSerializers
 from rest_framework import generics
 
 class DocumentList(generics.ListCreateAPIView):
-    queryset = Document_type.objects.filter(status=True)
+    queryset = DocumentType.objects.filter(status=True)
     serializer_class = DocumentSerializers
 
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Document_type.objects.all()
+    queryset = DocumentType.objects.all()
     serializer_class = DocumentSerializers
 
     def update(self, request, *args, **kwargs):

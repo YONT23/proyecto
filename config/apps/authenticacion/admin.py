@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import Person, Gender, Document_type, Resource,  Resource_rol, Rol, User_rol, CustomUser
+from .models import Person, Gender, DocumentType, Resource,  ResourceRol, Rol, UserRol, CustomUser
 
 
 from django.contrib.auth.models import Group  
@@ -9,11 +9,11 @@ from django.contrib.auth.models import Group
 
 admin.site.register(Person)
 admin.site.register(Gender)
-admin.site.register(Document_type)
+admin.site.register(DocumentType)
 admin.site.register(Resource)
-admin.site.register(Resource_rol)
+admin.site.register(ResourceRol)
 admin.site.register(Rol)
-admin.site.register(User_rol)
+admin.site.register(UserRol)
 
 @admin.register(get_user_model())
 class CustomUserAdmin(UserAdmin):
