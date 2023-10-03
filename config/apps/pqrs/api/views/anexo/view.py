@@ -15,7 +15,6 @@ class AnexoView(APIView):
         response ,code = create_response(status.HTTP_200_OK,"sucess",{"results":data.data})
         return Response(response,code)
 
-
 class SaveAnexoView(APIView):
 
     def post(self, request, *args, **kwargs):
@@ -66,7 +65,6 @@ class UpdateAnexoView(APIView):
             return seccionId
         except Anexo.DoesNotExist:
             return None
-
 
     def put(self, request, *args, **kwargs):
 

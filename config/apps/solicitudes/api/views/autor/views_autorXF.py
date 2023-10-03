@@ -52,14 +52,8 @@ def descargar_archivo(request, archivo):
     else:
         return HttpResponse("Archivo no encontrado", status=404)
 
-def descargar_resol_conv(request, pk):
-    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
-    return descargar_archivo(request, contenido.resol_conv)
-
 def descargar_cert_grado(request, pk):
     contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
     return descargar_archivo(request, contenido.cert_grado)
 
-def descargar_cert_resol(request, pk):
-    contenido = get_object_or_404(UsuarioXFormacion, pk=pk, status=True)
-    return descargar_archivo(request, contenido.cert_resol)
+

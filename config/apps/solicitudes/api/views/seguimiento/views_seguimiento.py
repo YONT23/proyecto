@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from apps.authenticacion.models import CustomUser, UserRol, Rol
+from django.http import HttpResponse
 
 class SeguimientoList(generics.ListCreateAPIView):
     queryset = Seguimiento.objects.filter(status=True)  
@@ -58,28 +59,45 @@ class SeguimientoDetail(generics.RetrieveUpdateDestroyAPIView):
         instance.status = False
         instance.save()
 
-def descargar_archivo(request, pk):
-    seguimiento = get_object_or_404(Seguimiento, pk=pk, status=True)
-    archivo = seguimiento.correciones
+def descargar_archivo(request, archivo):
     if archivo:
         response = FileResponse(archivo)
         return response
     else:
-        raise Http404("Archivo no encontrado")
+        return HttpResponse("Archivo no encontrado", status=404)
+    
+def descargar_formato_evaluacion(request, pk):
+    contenido = get_object_or_404(Seguimiento, pk=pk, status=True)
+    return descargar_archivo(request, contenido.formato_evaluacion)
+
+def descargar_correciones(request, pk):
+    contenido = get_object_or_404(Seguimiento, pk=pk, status=True)
+    return descargar_archivo(request, contenido.correciones)
 
 @receiver(post_save, sender=Seguimiento)
 def enviar_correo_cuando_actualiza(sender, instance, **kwargs):
-    if instance.cambio_relevante:
+    if instance.estado_seguimiento:
         autores_data = CustomUser.objects.values('id', 'email')
         subject = 'Seguimiento de su solicitud generada'
-        message = 'Tu seguimiento de su solicitud ha sido generada exitosamente'
+        
+        message = f'''
+            
+Cordial saludo:
+                
+Tu seguimiento se le a realizado un cambio en el estado de los seguimientos de su solicitud.
+                
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+                
+Este es un correo enviado automaticamente, favor no responder.
+                
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+           
+            '''
+    
         from_email = 'mendozaym01@gmail.com'
         
         recipient_list = [autor['email'] for autor in autores_data] + [instance.responsableId.email]
         send_mail(subject, message, from_email, recipient_list)
-
-        instance.cambio_relevante = False
-        instance.save()
   
 @receiver(post_save, sender=Seguimiento)      
 def enviar_correo_10_dias(sender, instance, **kwargs):
@@ -96,7 +114,25 @@ def enviar_correo_10_dias(sender, instance, **kwargs):
         # Envía correos electrónicos a los responsables de los seguimientos
         for seguimiento in seguimientos:
             subject = 'Recordatorio: Evaluación en 10 días'
-            message = f'Recuerda que la fecha de evaluación para el seguimiento de la solicitud {seguimiento.solicitudId.titulo_articulo} es el {fecha_programacion}.'
+            
+            message = f'''
+Cordial saludo:
+                
+Estimado/a {seguimiento.responsableId.username},
+
+Este es un recordatorio de que la fecha de evaluación para el seguimiento de la solicitud "{seguimiento.solicitudId.titulo_articulo}" está programada para el {fecha_programacion}.
+
+Por favor, asegúrese de estar preparado para la evaluación en esa fecha.
+                
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+                
+Este es un correo enviado automaticamente, favor no responder.
+                
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+           
+            '''
+            
+
             from_email = 'mendozaym01@gmail.com'
             recipient_list = [seguimiento.responsableId.email]
 
@@ -116,7 +152,25 @@ def enviar_correo_5_dias(sender, instance, **kwargs):
         # Envía correos electrónicos a los responsables de los seguimientos
         for seguimiento in seguimientos:
             subject = 'Recordatorio: Evaluación en 5 días'
-            message = f'Recuerda que la fecha de evaluación para el seguimiento de la solicitud {seguimiento.solicitudId.titulo_articulo} es el {fecha_programacion}.'
+            
+            message = f'''
+            
+Cordial saludo:
+                
+Estimado/a {seguimiento.responsableId.username},
+
+Este es un recordatorio de que la fecha de evaluación para el seguimiento de la solicitud "{seguimiento.solicitudId.titulo_articulo}" está programada para el {fecha_programacion}.
+
+Por favor, asegúrese de estar preparado para la evaluación en esa fecha.
+                
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+                
+Este es un correo enviado automaticamente, favor no responder.
+                
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+           
+            '''
+            
             from_email = 'mendozaym01@gmail.com'
             recipient_list = [seguimiento.responsableId.email]
 
@@ -128,7 +182,24 @@ def enviar_correo_al_responsable(sender, instance, created, **kwargs):
         # Verifica si se ha creado un nuevo seguimiento, si tiene un responsable asignado y si ese responsable tiene un correo válido
         from_email = 'mendozaym01@gmail.com'
         subject = 'Asignación de artículo'
-        message = f'Tienes un artículo asignado: {instance.solicitudId.titulo_articulo}, y su fecha de programación: {instance.fecha_programacion}.'
+        
+        message = f'''
+        
+Cordial saludo:
+            
+Estimado/a {instance.responsableId.username},
+
+Le informamos que se le ha asignado un nuevo artículo: "{instance.solicitudId.titulo_articulo}".
+Fecha de programación: {instance.fecha_programacion}.
+
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+            
+Este es un correo enviado automaticamente, favor no responder.
+            
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+           
+        '''
+        
         recipient_list = [instance.responsableId.email]
         
         send_mail(subject, message, from_email, recipient_list)
@@ -140,8 +211,22 @@ def enviar_correo_evaluacion(sender, instance, raw, **kwargs):
         if instance.estado_seguimiento != "Pendiente":
             if instance.responsableId:
                 from_email = 'mendozaym01@gmail.com'
-                subject = 'Evaluación realizada'
-                message = f'Se ha realizado una evaluación para el artículo: {instance.solicitudId.titulo_articulo}. Fecha de evaluación: {instance.fecha_evaluacion}.'
+                
+                subject = 'Evaluación Realizada'
+                message = f'''
+Cordial saludo:
+                
+Estimado/a {instance.responsableId.username}
+
+Le informamos que se ha realizado una evaluación para el artículo "{instance.solicitudId.titulo_articulo}".
+Fecha de evaluación: {instance.fecha_evaluacion}.
+
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+
+Este es un correo enviado automaticamente, favor no responder.
+
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+                '''
                 recipient_list = [instance.responsableId.email]
                 
                 send_mail(subject, message, from_email, recipient_list)
@@ -153,9 +238,21 @@ def notificar_editor_jefe(sender, instance, created, **kwargs):
         if instance.estado_seguimiento.nombre in ["Aceptado sin cambios", "Aceptado con cambios menores"]:
             editor_jefe = Rol.objects.get(name='Editor Jefe')      
             usuarios_editor_jefe = editor_jefe.users.filter(is_active=True)
-            from_email = 'mendozaym01@gmail.com'
-            subject = 'Artículo aceptado'
-            message = f'El seguimiento del artículo "{instance.solicitudId.titulo_articulo}" ha sido aceptado por los evaluadores.'
+            from_email = 'mendozaym01@gmail.com'      
+            subject = 'Notificación: Artículo Aceptado'
+            message = f'''  
+Cordial saludo:
+                
+Estimado Editor Jefe
+
+Le informamos que el seguimiento del artículo "{instance.solicitudId.titulo_articulo}" ha sido aceptado por los evaluadores.
+
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+
+Este es un correo enviado automaticamente, favor no responder.
+                
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+'''
             recipient_list = usuarios_editor_jefe
             send_mail(subject, message, from_email, recipient_list)
 

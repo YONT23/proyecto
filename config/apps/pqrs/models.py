@@ -17,7 +17,6 @@ class BaseModel(models.Model):
 class TipoPqrs(BaseModel):
     tipo = models.CharField(max_length=256)
 
-
 class Pqrs(BaseModel):
     titulo = models.CharField(max_length=256)
     description = models.CharField(max_length=256)

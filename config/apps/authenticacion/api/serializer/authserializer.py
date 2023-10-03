@@ -5,7 +5,7 @@ from rest_framework import  serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.serializers import CharField, ModelSerializer, SlugField
 
-from ...models import CustomUser
+from ...models import CustomUser, CustomLogEntry
 from .serializers import RolesSerializers
 from .customValidators import UserValidatorBefore
 User = get_user_model()
@@ -21,6 +21,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
         if user.avatar:
             return self.context['request'].build_absolute_uri(user.avatar.url)
         return None
+    
+class CustomLogEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomLogEntry
+        fields = '__all__'
 
 class UserChangePassword(ModelSerializer):
     password = CharField()

@@ -4,15 +4,6 @@
   "password": "12345678y"
 }
 
-
-{
-  "solicitud": 1,
-  "pasos_solicitud": 1,
-  "fecha": "2023-07-10",
-  "descripcion": "Muy pero muy bonita",
-  "estado": "2"
-}
-
 #Crear Persona
 {
   "username": "ejemplo3",
@@ -24,5 +15,5 @@
 
 #Pendientes !!
 {
-  validaciones en forma estructura re libreria 
+ 
 }

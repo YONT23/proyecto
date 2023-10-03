@@ -13,10 +13,10 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from .....models import CustomUser
+from .....models import CustomUser, CustomLogEntry
 from .....mudules import create_response
 from helps.flatList import flatList
-from ....serializer.authserializer import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer
+from ....serializer.authserializer import UserSerializer, CreateUserSerializers, UserChangePassword, CustomUserSerializer, CustomLogEntrySerializer
 from apps.authenticacion.api.serializer.auth_serializer import LoginSerializers,RegistroSerializzer, RegisterSerializers, RegisterUserSerializer
 from apps.authenticacion.api.serializer.serializers import ResourcesSerializers, ResourcesRolesSerializers
 
@@ -47,6 +47,10 @@ class CustomUserList(generics.ListCreateAPIView):
             "errors": serializer.errors,
         }
         return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+class CustomLogEntryListCreateView(generics.ListCreateAPIView):
+    queryset = CustomLogEntry.objects.all()
+    serializer_class = CustomLogEntrySerializer
 
 def descargar_archivo(request, pk):
     contenido = get_object_or_404(CustomUser, pk=pk, is_active=True)

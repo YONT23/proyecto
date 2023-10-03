@@ -24,7 +24,7 @@ class Solicitud(models.Model):
     titulo_articulo = models.CharField(max_length=200) 
     autores = models.ManyToManyField(CustomUser)
     contenidoSolicitud = models.OneToOneField(ContenidoSolicitud, on_delete=models.CASCADE, null=True)
-    fecha = models.DateField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     afiliacion = models.CharField(max_length=256)
     status = models.BooleanField(default=True)
     
@@ -35,7 +35,7 @@ class Solicitud(models.Model):
         verbose_name = 'Solicitud' 
              
 class PasosSeguimiento(models.Model):
-    nivel = models.CharField(max_length=256)
+    nivel = models.IntegerField()
     nombre = models.CharField(max_length=256)
     dias_programacion = models.CharField(max_length=256)
     status = models.BooleanField(default=True)

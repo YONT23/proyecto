@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .models import Person, Gender, DocumentType, Resource,  ResourceRol, Rol, UserRol, CustomUser
-
+from .models import CustomLogEntry
 
 from django.contrib.auth.models import Group  
 
@@ -28,6 +28,17 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'first_name', 'last_name', 'email')
 
 admin.site.unregister(Group)  
+
+
+class CustomLogEntryAdmin(admin.ModelAdmin):
+    list_display = ('action_time', 'user', 'content_type', 'object_id', 'object_repr', 'action_flag', 'change_message')
+    list_filter = ('action_flag',)
+    search_fields = ('user__username',)
+    date_hierarchy = 'action_time'
+    ordering = ('-action_time',)
+
+admin.site.register(CustomLogEntry, CustomLogEntryAdmin)
+
 
 
 

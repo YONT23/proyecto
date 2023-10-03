@@ -46,11 +46,27 @@ class SolicitudDetail(generics.RetrieveUpdateDestroyAPIView):
 @receiver(post_save, sender=Solicitud)
 def enviar_correo_cuando_se_crea_solicitud(sender, instance, created, **kwargs):
     if created:
-        autores_data = CustomUser.objects.values('id', 'email')
-
-        print("La función se ha ejecutado correctamente")  # Verifica si se ejecuta la función
+        autores_data = instance.autores.values('email', 'username')
         subject = 'Nueva solicitud de revisión de artículo'
-        message = 'Se ha creado una nueva solicitud de revisión de artículo.'
+        
+        message = f'''
+Cordial saludo:
+        
+¡Estimados Autores!
+
+Hemos recibido una nueva Solicitud de Revisión de Artículo. Aquí están los detalles:
+
+Título del Artículo: {instance.titulo_articulo}
+Fecha de Creación: {instance.fecha_creacion}
+Autores: {'; '.join([f"{autor['username']} {autor['email']}" for autor in autores_data])}
+
+Gracias por su contribución y participación en nuestro proceso de revisión de artículos.
+
+Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
+                
+Este es un correo enviado automaticamente, favor no responder.
+El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.  
+        '''
         from_email = 'mendozaym01@gmail.com'
         
         recipient_list = [autor['email'] for autor in autores_data] + ['lordym00@gmail.com']

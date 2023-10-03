@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import UserManager
+from django.contrib.admin.models import LogEntry
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=45, null=False)
@@ -142,4 +143,9 @@ class ResourceRol(BaseModel):
         verbose_name = 'Resources_rols'
         verbose_name_plural = 'resources_rols'
 
+class CustomLogEntry(LogEntry):
+    class Meta:
+        proxy = True
+        verbose_name = "Registro de Inicio de Sesión"
+        verbose_name_plural = "Registros de Inicio de Sesión"
 

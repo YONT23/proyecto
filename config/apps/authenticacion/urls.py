@@ -1,6 +1,9 @@
 from django.urls import path, include
-from .api.view.models_view.users.auth import (CustomUserList,UserDetail,UserPublic,UserCreate,UserUpdate,ProfileView,  
-                   RegistroView,AuthLogin, LogoutView,UserChangePasswordView ,descargar_archivo)
+from .api.view.models_view.users.auth import (CustomUserList,UserDetail,UserPublic,
+                    UserCreate,UserUpdate,ProfileView,  
+                    RegistroView,AuthLogin, LogoutView,UserChangePasswordView,
+                    CustomLogEntryListCreateView 
+                    ,descargar_archivo)
 
 urlpatterns = [
     # Auth views
@@ -9,6 +12,7 @@ urlpatterns = [
     path('auth/logout/', LogoutView.as_view(), name='auth_logout'),
     
     # User 
+    path('logs/', CustomLogEntryListCreateView.as_view(), name='log-list-create'),
     path('user/', CustomUserList.as_view(), name='customuser-list'),
     path('user/<int:pk>/descargar/', descargar_archivo, name='descargar-archivo'),
     path('user/<int:pk>/', UserDetail.as_view(), name='user-detail'),

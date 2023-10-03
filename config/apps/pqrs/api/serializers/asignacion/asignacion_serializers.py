@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from ....models import Asignacion, CustomUser, Pqrs
+from ....models import Asignacion, Pqrs
+from apps.authenticacion.models import CustomUser
 from ..BaseSerializers import BaseSerializers
 
 class AsignacionSerializers(BaseSerializers):
