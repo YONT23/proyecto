@@ -76,7 +76,7 @@ def descargar_correciones(request, pk):
 
 @receiver(post_save, sender=Seguimiento)
 def enviar_correo_cuando_actualiza(sender, instance, **kwargs):
-    if instance.estado_seguimiento:
+    if instance.pasos_seguimiento_id != 1:
         autores_data = CustomUser.objects.values('id', 'email')
         subject = 'Seguimiento de su solicitud generada'
         
@@ -90,8 +90,6 @@ Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones perti
                 
 Este es un correo enviado automaticamente, favor no responder.
                 
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
-           
             '''
     
         from_email = 'mendozaym01@gmail.com'
@@ -127,9 +125,7 @@ Por favor, asegúrese de estar preparado para la evaluación en esa fecha.
 Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
                 
 Este es un correo enviado automaticamente, favor no responder.
-                
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
-           
+                       
             '''
             
 
@@ -166,9 +162,7 @@ Por favor, asegúrese de estar preparado para la evaluación en esa fecha.
 Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
                 
 Este es un correo enviado automaticamente, favor no responder.
-                
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
-           
+                         
             '''
             
             from_email = 'mendozaym01@gmail.com'
@@ -196,8 +190,7 @@ Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones perti
             
 Este es un correo enviado automaticamente, favor no responder.
             
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
-           
+         
         '''
         
         recipient_list = [instance.responsableId.email]
@@ -224,8 +217,7 @@ Fecha de evaluación: {instance.fecha_evaluacion}.
 Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
 
 Este es un correo enviado automaticamente, favor no responder.
-
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
+             
                 '''
                 recipient_list = [instance.responsableId.email]
                 
@@ -251,7 +243,6 @@ Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones perti
 
 Este es un correo enviado automaticamente, favor no responder.
                 
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.
 '''
             recipient_list = usuarios_editor_jefe
             send_mail(subject, message, from_email, recipient_list)

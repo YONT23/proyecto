@@ -33,7 +33,7 @@ class Solicitud(models.Model):
 
     class Meta:
         verbose_name = 'Solicitud' 
-             
+        
 class PasosSeguimiento(models.Model):
     nivel = models.IntegerField()
     nombre = models.CharField(max_length=256)
@@ -77,21 +77,3 @@ class Anexos(models.Model):
     def __str__(self):
         return str(self.solicitudId)
         
-class NivelFormacion(models.Model):
-    nombre = models.CharField(max_length=256)
-    status = models.BooleanField(default=True)
-   
-    def __str__(self):
-        return self.nombre 
-       
-class UsuarioXFormacion(models.Model):
-    nombre = models.CharField(max_length=256)
-    fecha_grado = models.DateField(null=True, blank=True)
-    cert_grado = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
-    nombre_institucion = models.CharField(max_length=256)
-    nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
-    autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
-    
-    def __str__(self):
-        return self.nombre

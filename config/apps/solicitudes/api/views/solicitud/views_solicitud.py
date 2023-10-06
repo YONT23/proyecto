@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.response import Response
 from apps.authenticacion.models import CustomUser
+from django.db.models import F
 
 class SolicitudList(generics.ListCreateAPIView):
     queryset = Solicitud.objects.filter(status=True)
@@ -23,6 +24,9 @@ class SolicitudList(generics.ListCreateAPIView):
             for autor_id in autores_data:
                 autor = CustomUser.objects.get(pk=autor_id)
                 solicitud.autores.add(autor)
+
+            enviar_correo_cuando_se_crea_solicitud(sender=Solicitud, instance=solicitud, created=True, autores=autores_data)
+
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -42,41 +46,46 @@ class SolicitudDetail(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         instance.status = False
         instance.save()
-    
+
 @receiver(post_save, sender=Solicitud)
 def enviar_correo_cuando_se_crea_solicitud(sender, instance, created, **kwargs):
     if created:
-        autores_data = instance.autores.values('email', 'username')
-        subject = 'Nueva solicitud de revisión de artículo'
+        print("Se ha creado una nueva solicitud.")
+        autores_ids = kwargs.get('autores', [])  # Obtener IDs de autores
+        autores_objects = CustomUser.objects.filter(pk__in=autores_ids)  # Obtener objetos CustomUser
+        print("Autores relacionados:", autores_objects)
         
-        message = f'''
+        if autores_objects:
+            print("Se encontraron autores relacionados.")
+
+            subject = 'Nueva solicitud de sometimiento de artículo'
+
+            message = f'''
 Cordial saludo:
-        
+
 ¡Estimados Autores!
 
 Hemos recibido una nueva Solicitud de Revisión de Artículo. Aquí están los detalles:
 
 Título del Artículo: {instance.titulo_articulo}
 Fecha de Creación: {instance.fecha_creacion}
-Autores: {'; '.join([f"{autor['username']} {autor['email']}" for autor in autores_data])}
+Autores: {'; '.join([f"{autor.username} {autor.email}" for autor in autores_objects])}
 
 Gracias por su contribución y participación en nuestro proceso de revisión de artículos.
 
-Lo invitamos a ingresar a nuestra plataforma, para realizar las revisiones pertinentes.
-                
-Este es un correo enviado automaticamente, favor no responder.
-El correo revistas@uniguajira.edu.co es de uso exclusivo de envió por favor abstenerse de escribir a este correo puesto que no obtendrá respuesta alguna.  
-        '''
-        from_email = 'mendozaym01@gmail.com'
-        
-        recipient_list = [autor['email'] for autor in autores_data] + ['lordym00@gmail.com']
+Lo invitamos a ingresar a nuestra plataforma para realizar las revisiones pertinentes.
 
-        send_mail(subject, message, from_email, recipient_list)
+Este es un correo enviado automáticamente; favor no responder.
+'''
 
+            from_email = 'mendozaym01@gmail.com'
 
+            recipient_list = [autor.email for autor in autores_objects] + ['lordym00@gmail.com']
 
-
-
-
-
-
+            try:
+                send_mail(subject, message, from_email, recipient_list)
+                print("Correo electrónico enviado correctamente.")
+            except Exception as e:
+                print(f"Error al enviar el correo electrónico: {str(e)}")
+        else:
+            print("No se encontraron autores relacionados.")

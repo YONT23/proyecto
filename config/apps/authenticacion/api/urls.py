@@ -7,5 +7,7 @@ urlpatterns = [
     path('persons/', include('apps.authenticacion.api.view.models_view.persons.urls')),
     path('genders/', include('apps.authenticacion.api.view.models_view.gender.urls')),
     path('documents/', include('apps.authenticacion.api.view.models_view.documents.urls')),
-    path('security/',include('apps.authenticacion.api.view.models_view.security.urls')),
+    path('security/',include('apps.authenticacion.api.view.models_view.security.urls')), 
+    path('formacion/', include('apps.authenticacion.api.view.models_view.formacion.urls_autorXF')),
+    path('nivel_f/', include('apps.authenticacion.api.view.models_view.formacion.urls_nivelF')),
 ]

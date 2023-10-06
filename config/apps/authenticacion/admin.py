@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .models import Person, Gender, DocumentType, Resource,  ResourceRol, Rol, UserRol, CustomUser
-from .models import CustomLogEntry
+from .models import CustomLogEntry, NivelFormacion, Formacion
 
 from django.contrib.auth.models import Group  
 
@@ -14,6 +14,8 @@ admin.site.register(Resource)
 admin.site.register(ResourceRol)
 admin.site.register(Rol)
 admin.site.register(UserRol)
+admin.site.register(NivelFormacion)
+admin.site.register(Formacion)
 
 @admin.register(get_user_model())
 class CustomUserAdmin(UserAdmin):

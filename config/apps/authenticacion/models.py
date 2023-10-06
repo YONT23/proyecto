@@ -68,22 +68,15 @@ class Rol(BaseModel):
         verbose_name_plural = 'rols'
 
 class Person(BaseModel):
-    name = models.CharField(max_length=150,unique=True, blank=True, null=True)
-    surname = models.CharField(max_length=150,unique=True, blank=True, null=True)
-    identification = models.CharField(
-        max_length=255, unique=True, blank=True, null=True)
-    address = models.CharField(max_length=50, blank=True, null=True)
-    nationality = models.CharField(max_length=30, blank=True, null=True)
-    ciudad = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=150, blank=True, null=True)
+    apellido = models.CharField(max_length=150, blank=True, null=True)
+    # document_type = models.ForeignKey(
+    #     DocumentType, related_name='document_types', on_delete=models.SET_NULL, blank=True, null=True)
+    identification = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    Pais = models.CharField(max_length=30, blank=True, null=True)
     orcid = models.CharField(max_length=256, blank=True, null=True)
     url_orcid = models.CharField(max_length=256, blank=True, null=True)
-    date_of_birth = models.DateField(verbose_name='Fecha de nacimiento')
-    phone = models.CharField(max_length=20, blank=True, null=True)
     status = models.BooleanField(default=True)
-    document_type = models.ForeignKey(
-        DocumentType, related_name='document_types', on_delete=models.SET_NULL, blank=True, null=True)
-    gender_type = models.ForeignKey(
-        Gender, related_name='gender_types', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(CustomUser, related_name='user',
                              on_delete=models.SET_NULL, blank=True, null=True)
 
@@ -149,3 +142,21 @@ class CustomLogEntry(LogEntry):
         verbose_name = "Registro de Inicio de Sesión"
         verbose_name_plural = "Registros de Inicio de Sesión"
 
+class NivelFormacion(models.Model):
+    nombre = models.CharField(max_length=256)
+    status = models.BooleanField(default=True)
+   
+    def __str__(self):
+        return self.nombre 
+    
+class Formacion(models.Model):
+    nombre = models.CharField(max_length=256)
+    fecha_grado = models.DateField(null=True, blank=True)
+    cert_grado = models.FileField(upload_to='archivos/archivos_user_formacion/', null=True, blank=True)
+    nombre_institucion = models.CharField(max_length=256)
+    nivel_formacion = models.ForeignKey(NivelFormacion,on_delete=models.CASCADE)
+    autor = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    status = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.nombre

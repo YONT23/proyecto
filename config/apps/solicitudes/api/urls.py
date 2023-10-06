@@ -1,8 +1,6 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('usuarioxf/', include('apps.solicitudes.api.views.autor.urls_autorXF')),
-    path('nivel/', include('apps.solicitudes.api.views.autor.urls_nivelF')),
     path('contenido/', include('apps.solicitudes.api.views.literatura.urls_contenido')),
     path('seguimiento/', include('apps.solicitudes.api.views.seguimiento.urls_seguimiento')),
     path('estado/', include('apps.solicitudes.api.views.seguimiento.urls_estado')),
